@@ -1,0 +1,34 @@
+---
+output: github_document
+bibliography: /home/amandus/Documents/work/library/library.bib
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# timemachine
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of timemachine is to ...
+
+```{r pkgs}
+
+refs <- miscutils::pkg_refworker(
+  c("tidyverse"), 
+  "/home/amandus/Documents/work/library/library.bib",
+  "/home/amandus/Documents/work/library/biblio.bib"
+  )
+
+```
+
+## Credits
+
+The construction of this API is done in the R [@rversion] language uses the following packages; *tidyverse* [@tidyverse] 
