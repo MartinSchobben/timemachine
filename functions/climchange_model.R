@@ -15,7 +15,7 @@ curve_fit <- function(df, time, proxy) {
   # rescale age
   df <- mutate(
     df,
-    sc.age = -({{time}} - min({{time}})),
+    sc.age = -({{time}} - max({{time}})),
     sc.proxy = ({{proxy}} - (min({{proxy}}) - 0.1))
     )
 
@@ -43,13 +43,18 @@ curve_fit <- function(df, time, proxy) {
 
   # extract model sigma
   sigma_vc <- map_dbl(model_ls, possibly(function(x) {pull(broom::glance(x), "sigma")}, NA_real_))
-  name_model <-names(sigma_vc[which(sigma_vc == min(sigma_vc, na.rm = TRUE))])
+  sigma <- sigma_vc[which(sigma_vc == min(sigma_vc, na.rm = TRUE))]
+  name_model <- names(sigma)
   # select model with lowest sigma
   model <-  model_ls[[name_model]]
   expr_formula <- form_generator(model, name_model)
-  df <- mutate(df, .pred = predict(model, list(x = sc.age)) + min({{proxy}}) - 0.1)
 
-  return(lst(df = df, form = expr_formula))
+  if(max(pull(df, {{time}})) > 0.1) int <- 10^-3 else int <- 10^-5
+
+  Age <- seq(min(df$sc.age), max(df$sc.age), int)
+  pred <- predict(model, list(sc.age = Age)) + (min(pull(df, {{proxy}})) - 0.1)
+
+  return(lst(df = tibble(Age = max(pull(df, {{time}})) - Age, Proxy = pred), form = expr_formula, sel_mdl = names(sigma), model = model))
 }
 
 
@@ -67,7 +72,6 @@ form_generator <- function(model, type){
       a <- coefs[1]
       b <- coefs[2]
       }
-
 
   switch(
     type,

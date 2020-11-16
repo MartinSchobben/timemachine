@@ -39,7 +39,7 @@ clim_transients <-tibble(
     "LGM: Last Glacial Maximum"
     ),
 
-  x = c(55.88, 54.05, 33.7, 22.9, 3.3, 0.018),
+  x = c(55.88, 54.05, 33.7, 23.1, 3.3, 0.018),
   y = map_dbl(x, ~(approx_y(.x))[1])
 
 )

@@ -47,7 +47,7 @@ Westherhold2020ScMag <- CD_iso_dat[[24]]$data %>%
 
 
 # mean Holocene Anomaly
-meanHol <- filter(Westherhold2020ScMag, between(Age, 0, 0.0117)) %>% pull(Proxy) %>%  mean()
+#meanHol <- filter(Westherhold2020ScMag, between(Age, 0, 0.0117)) %>% pull(Proxy) %>%  mean()
 Westherhold2020ScMag <- filter(Westherhold2020ScMag, Age > 0.0117)
 
 #-------------------------------------------------------------------------------
@@ -65,14 +65,14 @@ Marcot2013ScMag <- readxl::read_xlsx(
   mutate(
     Age = Age / 10^6,
 #splice
-    Proxy = Proxy + meanHol,
+    Proxy = Proxy + 14, # Mean 1961–1990 temp Hansen et al 2013,
     record = "sediments",
     scenario = "0"
     )
 
 # mean Recent 1961-90 Anomaly (relative LGM)
 meanRecent <- Marcot2013ScMag$Proxy[4]
-
+Marcot2013ScMag <- filter(Marcot2013ScMag, Age > 0.0001)
 
 #-------------------------------------------------------------------------------
 # Hadley Center yearly instrumental sea surface anomalies data (HadCRUT4)

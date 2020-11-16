@@ -15,13 +15,17 @@ source("functions/timeplot.R") # get plot function
 source("functions/climchange_model.R") # get model function
 transients <- c("PETM", "worst", "best") %>% set_names(nm = c("PETM", "Anthropocene (worst case)", "Anthropocene (best case)"))
 
-PETM_txt <- "The Paleocene-Eocene Thermal Maximum (PETM;  56 Ma) is one of the most studied geological interval of extreme climate change. This particular event is associated with rapidly increasing global temperatures, known as a hyperthermal, which has often been associated with the melting of methane in an ice-like state stored in the seabed. It has been proposed as a future analogue."
+PETM_txt <- "The Paleocene-Eocene Thermal Maximum (PETM;  56 Ma) is one of the most studied geological interval of extreme climate change. This particular event is associated with rapidly increasing global temperatures, known as a hyperthermal. The temperature rise has been attributed to the melting of methane in an ice-like state stored in the seabed and CO2 release by massive volcanism. This make it an intersting interval to compare with the modern situation."
 scenario1_txt <- paste0("The Anthropocene (> 1850 AD = 0.1 Kya on plot) is the latest geological interval. This interval is coined after the unprecedented footprint left by humankind (anthro = human) on the Earth system as a whole. The depicted modelled future projection is the most optimistic scenario of human-induced climate change. These scenario are callled Representative
 Concentration Pathways (RCPs), where the number represents the relative to pre-industrial increase of radiative forcing in watts per metre squared. In this optimistic scenario, known as RCP2.6, it is suggested that humankind can come-up with solutions to curb the injection of fossil carbon, and emissions are 14% to 96% of what they were in 1990 AD by the year 2050 AD.", tags$sup("5"), tags$sup("6"))
-scenario2_txt <- paste0("The Anthropocene (> 1850 AD = 0.1 Kya on plot) is the latest geological interval. This interval is coined after the unprecedented footprint left by humankind (anthro = human) on the Earth system as a whole. The depicted modelled future projection is the most pesimistic scenario of human-induced climate change. These scenario are callled Representative
-Concentration Pathways (RCPs), where the number represents the relative to pre-industrial increase of radiative forcing in watts per metre squared. In this pestimistic scenario, known as RCP8.5, often referred to as business as usual, it is suggested that humankind will do nothing to reduce emmisions as we exploit more-and-more of the fossil fuel reserves.", tags$sup("5"), tags$sup("6"))
+scenario2_txt <- HTML(paste0("The Anthropocene (> 1850 AD = 0.1 Kya on plot) is the latest geological interval. This interval is coined after the unprecedented footprint left by humankind (anthro = human) on the Earth system as a whole. The depicted modelled future projection is the most pesimistic scenario of human-induced climate change. These scenario are callled Representative
+Concentration Pathways (RCPs), where the number represents the relative to pre-industrial increase of radiative forcing in watts per metre squared. In this pestimistic scenario, known as RCP8.5, often referred to as business as usual, it is suggested that humankind will do nothing to reduce emmisions as we exploit more-and-more of the fossil fuel reserves.", tags$sup("5"), tags$sup("6")))
+LC_txt <- "Linear curve: Has a constant rate of change."
+JC_txt <- "The J (exponential) curve: Has a rate of change that is proportional to the time unit, causing unbounded acceleration."
+SC_txt <- "The S (logistic) curve: The exponential curve is bounded by an upper limit."
 
-#plot background
+
+# zoom plot plot background
 bkgr <- rgb(241, 241, 241, maxColorValue = 251)
 
 ui <- fluidPage(
@@ -47,7 +51,7 @@ ui <- fluidPage(
                                 "plot1",
                                 height = 300,
                                 brush = brushOpts(
-                                    id = "plot2_brush",
+                                    id = "plot1_brush",
                                     resetOnNew = TRUE
                                     )
                                 ),
@@ -64,7 +68,9 @@ ui <- fluidPage(
                                         tags$sup("18"), "O from ref. 1 and
                                         composite curve from ref. 2)
                                         instrumental (HadCRUT4)", tags$sup("3"),
-                                        ", model (BCC_CM1)", tags$sup("4")
+                                        ", model (BCC_CM1)", tags$sup("4"),
+                                        "&delta;",tags$sup("18"), ". O
+                                        conversion to temperature after ref 5."
                                         )
                                     )
                                 )
@@ -117,41 +123,60 @@ ui <- fluidPage(
             column(width = 4),
             column(
                 width = 4,
-                radioButtons("events", "Select an interval", transients, inline = TRUE)
+                radioButtons("events", "Select an interval", transients,
+                             inline = TRUE
+                             )
                 ),
             column(
                 width =4
                 )
             ),
-        #-------------------------------------------------------------------------------
-        # Overview plot
-        #-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+# Overview plot
+#-------------------------------------------------------------------------------
         fluidRow(
             sidebarPanel(
                 h4("Model rate of climate change"),
-                actionButton("simulate", "Simulate!"),
-                uiOutput("model_formula")
-            ),
-            #-------------------------------------------------------------------------------
-            # Text and legend
-            #-------------------------------------------------------------------------------
+                p(em("The rate of climate change captured in a mathematical
+                     expression."
+                     )
+                  ),
+                br(),
+                actionButton("simulate", "Fit curve"),
+                br(),
+                br(),
+                textOutput("model_txt"),
+                uiOutput("model_formula"),
+                actionButton("calculate", "Calculate rate of change"),
+                br(),
+                br(),
+                textOutput("avg_rate")
+                ),
+#-------------------------------------------------------------------------------
+# Text and legend
+#-------------------------------------------------------------------------------
             column(
                 width = 4,
                 textOutput("text1"),
                 plotOutput("legend2", height = 100)
             ),
-            #-------------------------------------------------------------------------------
-            # Plot
-            #-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+# Plot
+#-------------------------------------------------------------------------------
             column(
                 width = 4,
-                plotOutput("plot3"),
+                plotOutput("plot3",
+                           brush = brushOpts(
+                               id = "plot3_brush",
+                               resetOnNew = TRUE
+                               )
+                           ),
                 plotOutput("chrono3", height = 100)
                 )
             ),
-        #-------------------------------------------------------------------------------
-        # References
-        #-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+# References
+#-------------------------------------------------------------------------------
         fluidRow(
             HTML('<hr style="color: purple;">'),
             column(
@@ -179,31 +204,51 @@ server <- function(input, output) {
 # ------------------------------------------------------------------------------
 # Linked plots
 #-------------------------------------------------------------------------------
-    ranges <- reactiveValues(x = NULL, y = NULL)
+    # reactive values starters
+    ranges1 <- reactiveValues(x = NULL, y = NULL)
+    ranges2 <- reactiveValues(x = NULL, y = NULL)
 
-    strat_plot1 <- reactive(chrono_bldr(time_plot(temp_curve, Age, Proxy), capture_legend = TRUE))
+
+    strat_plot1 <- reactive(chrono_bldr(time_plot(temp_curve, Age, Proxy),
+                                        capture_legend = TRUE
+                                        )
+                            )
 
     proxy1 <- reactive(strat_plot1() %>% pluck("original"))
     chrono1 <- reactive(strat_plot1() %>% pluck("chrono") %>% plot)
     legbox <- reactive(strat_plot1() %>% pluck("legbox") %>% plot)
 
+#-------------------------------------------------------------------------------
+# Overview plot
+#-------------------------------------------------------------------------------
     output$plot1 <- renderPlot({proxy1()})
     output$chrono1 <- renderPlot({chrono1()})
     output$legend1 <- renderPlot({legbox()})
 
+#-------------------------------------------------------------------------------
+# Zoom plot
+#-------------------------------------------------------------------------------
     strat_plot2 <- reactive(
         chrono_bldr(
-            time_plot(temp_curve, Age, Proxy, explain = TRUE, range_sh = ranges$x) +
-                coord_cartesian(xlim = rev(ranges$x), ylim = ranges$y, expand = FALSE) +
+            time_plot(temp_curve, Age, Proxy, explain = TRUE,
+                      range_sh = ranges1$x
+                      ) +
+                coord_cartesian(
+                    xlim = rev(ranges1$x),
+                    ylim = ranges1$y,
+                    expand = FALSE
+                    ) +
                 theme(
-                    plot.background = element_rect(
-                        fill = bkgr,
-                        color = bkgr
-                        ),
-                    panel.background = element_rect(
-                        fill = bkgr,
-                        color = bkgr
-                        )
+                    plot.background =
+                        element_rect(
+                          fill = bkgr,
+                          color = bkgr
+                         ),
+                    panel.background =
+                        element_rect(
+                          fill = bkgr,
+                          color = bkgr
+                          )
                         ),
             reverse = TRUE
             )
@@ -212,72 +257,83 @@ server <- function(input, output) {
     proxy2 <- reactive(strat_plot2() %>% pluck("original"))
     chrono2 <- reactive(strat_plot2() %>% pluck("chrono") %>% plot)
 
-    observeEvent(input$plot2_brush,
-                 { output$plot2 <- renderPlot({proxy2()})
-                   output$chrono2 <- renderPlot({chrono2()})
-                   }
-                 )
+#-------------------------------------------------------------------------------
+# Brush 1
+#-------------------------------------------------------------------------------
+    observeEvent(input$plot1_brush,{
+        output$plot2 <- renderPlot({proxy2()})
+        output$chrono2 <- renderPlot({chrono2()})
+        }
+        )
 
 #-------------------------------------------------------------------------------
 # When a double-click happens, check if there's a brush on the plot.
 # If so, zoom to the brush bounds; if not, reset the zoom.
 #-------------------------------------------------------------------------------
     observe({
-        brush <- input$plot2_brush
+        brush <- input$plot1_brush
         if (!is.null(brush)) {
-            ranges$x <- c(brush$xmin, brush$xmax)
-            ranges$y <- c(brush$ymin, brush$ymax)
+            ranges1$x <- c(brush$xmin, brush$xmax)
+            ranges1$y <- c(brush$ymin, brush$ymax)
 
         } else {
-            ranges$x <- NULL
-            ranges$y <- NULL
+            ranges1$x <- NULL
+            ranges1$y <- NULL
+
         }
-    })
+    }
+    )
 
 #-------------------------------------------------------------------------------
-# events
+# Event data selection and curve fit preperation
 #-------------------------------------------------------------------------------
     data_select <- reactive({
 
         switch(
             input$events,
             PETM = filter(temp_curve, between(Age, 55.835, 56.135)),
-            worst = filter(temp_curve, Age < 10^-3, scenario == "0" | scenario == "2"),
-            best = filter(temp_curve,  Age < 10^-3, scenario == "0" | scenario == "1")
+            worst = filter(temp_curve, Age < 10^-3, scenario == "0" |
+                               scenario == "2"
+                           ),
+            best = filter(temp_curve,  Age < 10^-3, scenario == "0" |
+                              scenario == "1"
+                          )
             )
-
-        })
+        }
+        )
 
     strat_plot3 <- reactive({
         chrono_bldr(time_plot(data_select(), Age, Proxy, events = FALSE))
-        })
+        }
+        )
 
     # fit a model
     fit <- reactive({curve_fit(data_select(), Age, Proxy)})
 
     # make a line
     curve <- reactive({
-
         lst(geom_line(
                   data = pluck(fit(), "df") ,
-                  aes(x = Age, y = .pred),
+                  aes(x = Age, y = Proxy),
                   color = "red",
-                  size = 1.1
-                  ))
-        })
+                  size = 1.1,
+                  inherit.aes = FALSE
+                  )
+            )
+        }
+        )
 
-
+#-------------------------------------------------------------------------------
+# Transient overview plot
+#-------------------------------------------------------------------------------
     proxy3 <- reactive(strat_plot3() %>% pluck("original"))
     chrono3 <- reactive(strat_plot3() %>% pluck("chrono") %>% plot)
-
-
-    output$plot3 <- renderPlot({proxy3()})
-
-    observeEvent(input$simulate, {
-        output$plot3 <- renderPlot({proxy3() + curve()})
-    })
-
     output$chrono3 <- renderPlot({chrono3()})
+
+#-------------------------------------------------------------------------------
+# Explanatory text of transient
+#-------------------------------------------------------------------------------
+
     output$text1 <- renderText({
         switch(
             input$events,
@@ -285,16 +341,90 @@ server <- function(input, output) {
             worst = print(scenario2_txt),
             best = print(scenario1_txt)
             )
-    })
+    }
+    )
+
+#-------------------------------------------------------------------------------
+# Curve fit exercise
+#-------------------------------------------------------------------------------
 
     # make a formula
     observeEvent(input$simulate, {
         output$model_formula <- renderUI(withMathJax(pluck(fit(), "form")))
-        })
+        output$model_txt <- renderText({
+            switch(pluck(fit(), "sel_mdl"),
+                   model_lm = LC_txt,
+                   model_exp = JC_txt,
+                   model_logistic = SC_txt
+                   )
+                   })
+        output$plot3 <- renderPlot({proxy3() + curve()})
+        }
+        )
 
 
+   # calculate rates
+   rate_estimate <- reactive({
+
+       if (is.null(ranges2$x) |button2$result == FALSE) {
+           return()
+       } else {
+           period <- diff(ranges2$x) * 10 ^ 6 # year
+           temp <- diff(ranges2$y)  # degree Celsius
+           rate <- temp / period
+           return(paste0(sprintf("%.3g", rate), " °C / year"))
+       }
+       }
+       )
+
+    output$avg_rate <- renderText({rate_estimate()})
+
+#-------------------------------------------------------------------------------
+# Remove Curve fit and model outcome upon switching event
+#-------------------------------------------------------------------------------
+    observeEvent(input$events, {
+        output$plot3 <- renderPlot({proxy3()})
+        output$model_formula <- renderUI(NULL)
+        output$model_txt <- renderText(NULL)
+        # ranges2$x <- NULL
+        # ranges2$y <- NULL
+    }
+    )
+
+#-------------------------------------------------------------------------------
+# reactive value to flip action buttion number two back to original state
+#-------------------------------------------------------------------------------
+    button2 <- reactiveValues(result = FALSE)
+
+    observeEvent(input$calculate, {
+        # 0 will be coerced to FALSE
+        # 1+ will be coerced to TRUE
+        button2$result <- input$calculate
+    })
+
+    observeEvent(input$events, {
+        button2$result <- FALSE
+    })
+
+#-------------------------------------------------------------------------------
+# When a double-click happens, check if there's a brush on the plot.
+# If so, zoom to the brush bounds; if not, reset the zoom.
+#-------------------------------------------------------------------------------
+    observeEvent(input$plot3_brush, {
+        brush2 <- brushedPoints(pluck(fit(), "df"), input$plot3_brush)
+        if (!is.null(brush2)) {
+            ranges2$x <- c(min(brush2$Age) , max(brush2$Age))
+            ranges2$y <-c(min(brush2$Proxy) , max(brush2$Proxy))
+        } else {
+            ranges2$x <- NULL
+            ranges2$y <- NULL
+        }
+        }
+    )
 
     }
 
+#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Run the application
 shinyApp(ui = ui, server = server)
