@@ -10,6 +10,8 @@ current rate of climate change is unprecedented when compared to what we
 know of past climate and extreme climate events, such as the
 Paleocene-Eocene Thermal Maximum (PETM; \~56 Ma).
 
+I am still developing the app.
+
 # Data sources and compilation
 
 The surface temperature record spanning the Cretaceous up to the

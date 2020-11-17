@@ -23,6 +23,8 @@ knitr::opts_chunk$set(
 
 This app is intended for educational purposes. The interactive plots should instill a better appreciation of long geological timescales and our current understanding of past, present and future climate. The current rate of climate change is unprecedented when compared to what we know of past climate and extreme climate events, such as the Paleocene-Eocene Thermal Maximum (PETM;  ~56 Ma). 
 
+I am still developing the app.
+
 # Data sources and compilation
 
 The surface temperature record spanning the Cretaceous up to the Holocene is based on the corrected $\delta$^18^O dataset of @Westerhold2020, and following the same corrections for the presence of ice as described in @Hansen2013. The Holocene temperatures are based on the global temperature anomaly (Standard~5x5Grid~) stack of @Marcott2013 spliced on top of a 1961--1990 mean temperature of 14$\,$°C [@Hansen2013]. The instrumental HadCrut4 sea surface anomaly dataset was downloaded from the Climatic Research Unit (University of East Anglia) and Met Office [website](https://crudata.uea.ac.uk/cru/data/temperature/HadSST3-gl.dat). This record was spliced on top of the mean temperature of the @Marcott2013 record for the interval between 1961 and 1990. Future extrapolations (scenarios or Representative
