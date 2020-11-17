@@ -1,35 +1,13 @@
-library(cubelyr)
-library(tidyverse)
-library(raster)
-library(ncdf4) # package for netcdf manipulation
-library(lubridate)
+# load data (https://climate4impact.eu/) CMIP5 scenarios in netcdf format
+# 2.6 W m-2
+nc_rcp26 <- ncdf4::nc_open(RCurl::getURL("http://esgf.nci.org.au/thredds/fileServer/replica/CMIP5/output1/BCC/bcc-csm1-1-m/rcp26/mon/atmos/Amon/r1i1p1/v20120910/tas/tas_Amon_bcc-csm1-1-m_rcp26_r1i1p1_200601-210012.nc"))
+# 8.5 W m-2
+nc_rcp85 <- ncdf4::nc_open(RCurl::getURL("http://esgf.nci.org.au/thredds/fileServer/replica/CMIP5/output1/BCC/bcc-csm1-1-m/rcp85/mon/atmos/Amon/r1i1p1/v20130405/tas/tas_Amon_bcc-csm1-1-m_rcp85_r1i1p1_200601-209912.nc"))
 
-# load data (https://climate4impact.eu/) CMIP5 rcp26 scenario in netcdf format https://rpubs.com/boyerag/297592
-nc_rcp26 <- nc_open("data-raw/tas_Amon_bcc-csm1-1-m_rcp26_r1i1p1_200601-210012.nc") # 2.6 W m-2
-nc_rcp85 <- nc_open("data-raw/tas_Amon_bcc-csm1-1-m_rcp85_r1i1p1_200601-209912.nc") # 8.5 W m-2
-# save dimensions
-lon <- ncvar_get(nc_rcp26, "lon")
-lat <- ncvar_get(nc_rcp26, "lat", verbose = F)
-t <- ncvar_get(nc_rcp26, "time")
-# store the data in a 3-dimensional array
-ndvi.array <- ncvar_get(nc_rcp26)
-
-# get a slice to check data
-ndvi.slice <- ndvi.array[, , 1]
-# raster a slice
-r <- raster(t(ndvi.slice), xmn=min(lon), xmx=max(lon), ymn=min(lat), ymx=max(lat), crs=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0"))
-# flip
-r <- flip(r, direction='y')
-# plot
-plot(r)
-
-
-
-
+# function to flatten the ncdf data
 flatten_model <- function(model) {
-
 # store data in array
-  model <- ncvar_get(model)
+  model <-  ncdf4::ncvar_get(model)
 # dim sizes
   dim_size <- dim(model)
 # provide dim names
@@ -40,7 +18,7 @@ flatten_model <- function(model) {
     )
 
 # flatten array and summarize global temps
-as_tibble(as.tbl_cube(model))  %>%
+as_tibble(cubelyr::as.tbl_cube(model))  %>%
   group_by(t) %>%
   summarise(mean_T = mean(model)) %>%
   separate(t, into =c("label", "t") , sep = "_") %>%
@@ -52,10 +30,7 @@ as_tibble(as.tbl_cube(model))  %>%
 
 sum_rcp26 <- flatten_model(nc_rcp26)
 sum_rcp85 <- flatten_model(nc_rcp85)
-GCMs <- bind_rows(sum_rcp26, sum_rcp85, .id = "scenario")
-saveRDS(GCMs, "data-raw/clim_model_predict.rds")
+clim_model_predict <- bind_rows(sum_rcp26, sum_rcp85, .id = "scenario")
 
-ggplot(GCMs, aes(y = Proxy, x = Age, color = scenario))+
-  geom_point() +
-  geom_smooth()
+#usethis::use_data(clim_model_predict, overwrite = TRUE)
 

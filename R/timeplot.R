@@ -11,11 +11,10 @@
 #' @return ggplot
 #' @export
 time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE, range_sh = NULL){
+
   # default ggplot theme
   theme_set(theme_classic())
-
-  # clim_transients <- readRDS("data/clim_transients.RDS") # get labeled events
-  # clim_trends <- readRDS("data/clim_trends.RDS") # get labeled events
+  # color palette
   dark <- RColorBrewer::brewer.pal(3, "Dark2")
   col_pal <- c(
     "sediments" = dark[3] ,
@@ -64,11 +63,4 @@ time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE, range_sh 
 }
 
 label_geotime <- function(fctt) function(x) {x * fctt}
-
-# geotime_finder <- function(df, time) {
-#   res_time <- pull(df, {{time}})  %>% range() %>% diff()
-#   if (res_time > 1) {return(lst(fct_ch = 1, age_lab = "Myr"))}
-#   if (between(res_time,  10^-3, 1)) {return(lst(fct_ch = 10^3, age_lab = "Kyr"))}
-#   if (res_time < 10^-3) {return(lst(fct_ch = 10^6, age_lab = "yr"))}
-# }
 

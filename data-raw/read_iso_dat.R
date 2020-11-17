@@ -11,12 +11,10 @@ Hansen_ice_light <- function(x) 5 - 8 * ((x - 1.75) / 3) # Equation 3.5
 Hansen_ice_heavy <- function(x) 1 - 4.4 * ((x - 3.25) / 3) # Equation 3.6
 Hansen_hot <- function(x) -4 * x + 12 # Equation 3.1
 
-
 # Pangaea database download
-Ceno_doi <- pg_search('Cenozoic global reference benthic carbon and oxygen isotope dataset (CENOGRID)')
-# save DOI
-saveRDS(Ceno_doi, file = "data/WestherholdDOI.RDS")
-CD_iso_dat <- pg_data(Ceno_doi$doi)
+Ceno_doi <- pangaear::pg_search('Cenozoic global reference benthic carbon and oxygen isotope dataset (CENOGRID)')
+CD_iso_dat <- pangaear::pg_data(Ceno_doi$doi)
+
 Westherhold2020ScMag <- CD_iso_dat[[24]]$data %>%
   transmute(
     Proxy = `Foram bent δ18O [‰ PDB] (VPDB CorrAdjusted)`,
@@ -27,7 +25,6 @@ Westherhold2020ScMag <- CD_iso_dat[[24]]$data %>%
       Age > 34.025 ~ Hansen_hot(Proxy)
       ),
 # surface corrections
-
     Proxy = case_when(
 # Equation 4.1
       Age >= 0 & Age < 2.58 ~ {2 * Proxy + 12.25},
@@ -40,17 +37,16 @@ Westherhold2020ScMag <- CD_iso_dat[[24]]$data %>%
     scenario = "0"
     )
 
-
 # mean Holocene Anomaly
-#meanHol <- filter(Westherhold2020ScMag, between(Age, 0, 0.0117)) %>% pull(Proxy) %>%  mean()
 Westherhold2020ScMag <- filter(Westherhold2020ScMag, Age > 0.0117)
 
 #-------------------------------------------------------------------------------
 # Marcot et al 2013 Science Magazine Holocene composite curve temperature curve
+# behind paywall
 #-------------------------------------------------------------------------------
 
 Marcot2013ScMag <- readxl::read_xlsx(
-  "data-raw/Marcott.SM.database.S1.xlsx",
+  "https://science-sciencemag.org/highwire/filestream/594506/field_highwire_adjunct_files/1/Marcott.SM.database.S1.xlsx",
   sheet = 3,
   na = "NaN",
   range = cellranger::as.cell_limits("C4:E571"),

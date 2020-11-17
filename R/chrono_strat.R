@@ -29,10 +29,12 @@ chrono_bldr <- function(graph, reverse = FALSE, capture_legend = FALSE) {
 
   # save legend
   if (capture_legend) {
-  g <- ggplotGrob(graph + theme(legend.position = "right",
-
-                                legend.margin = margin(-1, -1, -1, -1, "npc")
-                                ))$grobs
+  g <- ggplotGrob(graph +
+                    theme(
+                      legend.position = "right",
+                      legend.margin = margin(-1, -1, -1, -1, "npc")
+                      )
+                  )$grobs
   legbox <- g[[which(sapply(g, function(x) x$name) == "guide-box")]]
   }
 
@@ -115,13 +117,13 @@ chrono_bldr <- function(graph, reverse = FALSE, capture_legend = FALSE) {
                )
              )
 
-    tt <- tableGrob(
+    tt <- gridExtra::tableGrob(
       d = matrix(period.df$name, ncol = length(period.df$name), nrow = 1), # transpose to get  horizontal geochronological bar
       cols = NULL,
       rows = NULL,
       heights = unit(1, "null"),
       widths = unit(period.df$width, "null"),
-      theme = ttheme_minimal(
+      theme = gridExtra::ttheme_minimal(
         core = list(bg_params = list(
           fill = rgb(period.df$R ,period.df$G, period.df$B, maxColorValue = 255), col = "black"),
           fg_params = fonts

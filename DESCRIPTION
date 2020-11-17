@@ -8,24 +8,19 @@ Authors@R:
            email = "m.a.n.schobben@uu.nl",
            comment = c(ORCID = "0000-0001-8560-0037"))
 Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Depends: 
-    R (>= 2.10)
+    R (>= 3.5.0)
 Imports: 
     shiny,
     Cairo,
     ggplot2,
-    gridExtra,
     gtable,
     dplyr,
-  tibble,
+    tibble,
     tidyr,
-    rlang,
-    RCurl,
-    pangaear,
-    scales
+    rlang
