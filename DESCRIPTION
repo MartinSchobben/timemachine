@@ -29,4 +29,5 @@ Imports:
     ggrepel,
     purrr,
     shinythemes,
-    gridExtra
+    gridExtra,
+    magrittr
