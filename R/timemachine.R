@@ -3,7 +3,6 @@
 #' This is an educational package to learn about past, present and future
 #' climate
 #'
-#' @importFrom magrittr %>%
 #' @importFrom grDevices rgb
 #' @importFrom stats coef lm nls predict
 #' @importFrom utils read.table
