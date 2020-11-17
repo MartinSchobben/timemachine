@@ -158,7 +158,7 @@ server <- function(input, output) {
 
     strat_plot1 <- reactive({
         chrono_bldr(
-            time_plot(temp_curve, Age, Proxy), capture_legend = TRUE
+            time_plot(timemachine::temp_curve, Age, Proxy), capture_legend = TRUE
             )
     })
 
@@ -178,7 +178,7 @@ server <- function(input, output) {
 #-------------------------------------------------------------------------------
     strat_plot2 <- reactive(
         chrono_bldr(
-            time_plot(temp_curve, Age, Proxy, explain = TRUE,
+            time_plot(timemachine::temp_curve, Age, Proxy, explain = TRUE,
                       range_sh = ranges1$x
                       ) +
                 coord_cartesian(
@@ -239,12 +239,12 @@ server <- function(input, output) {
 
         switch(
             input$events,
-            PETM = filter(temp_curve, between(.data$Age, 55.835, 56.135)),
-            worst = filter(temp_curve, .data$Age < 10^-3,
+            PETM = filter(timemachine::temp_curve, between(.data$Age, 55.835, 56.135)),
+            worst = filter(timemachine::temp_curve, .data$Age < 10^-3,
                            .data$scenario == "0" |
                                .data$scenario == "2"
                            ),
-            best = filter(temp_curve,  .data$Age < 10^-3,
+            best = filter(timemachine::temp_curve,  .data$Age < 10^-3,
                           .data$scenario == "0" |
                               .data$scenario == "1"
                           )

@@ -71,7 +71,7 @@ chrono_bldr <- function(graph, reverse = FALSE, capture_legend = FALSE) {
   i.axis <- unique(gtable_filter(pg, "axis-l", trim = FALSE)$layout$t)
 
   # Filter to only use stratigraphic bounds contained within the plot
-  filter.chrono <- chrono_chart %>%
+  filter.chrono <- timemachine::chrono_chart %>%
     arrange(desc(.data$top)) %>%
     arrange(.data$type) %>%
     filter(.data$top <= max(x.range), .data$bottom >= min(x.range)) %>%

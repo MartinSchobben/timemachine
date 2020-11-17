@@ -24,7 +24,7 @@ time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE,
     )
 
   if (is.null(range_sh)) range_sh <- range(pull(df, {{time}}))
-  clim_transients <-filter(clim_transients,
+  clim_transients <-filter(timemachine::clim_transients,
                            between(.data$x, range_sh[1], range_sh[2])
                            )
 
@@ -54,7 +54,7 @@ time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE,
       inherit.aes = FALSE
       ) +
       geom_errorbarh(
-        data = clim_trends,
+        data = timemachine::clim_trends,
         aes(xmin = .data$xmin,
             xmax = .data$xmax,
             y = .data$y - 6
@@ -63,7 +63,7 @@ time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE,
         inherit.aes = FALSE
         ) +
       geom_text(
-        data = clim_trends,
+        data = timemachine::clim_trends,
         aes(x = .data$x,
             y = .data$y - 9,
             label = .data$label
@@ -80,7 +80,7 @@ time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE,
         inherit.aes = FALSE
         ) +
         geom_errorbarh(
-          data = clim_trends,
+          data = timemachine::clim_trends,
           aes(xmin = .data$xmin,
               xmax = .data$xmax,
               y = .data$y - 6
@@ -89,7 +89,7 @@ time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE,
               inherit.aes = FALSE
               ) +
         geom_text(
-          data = clim_trends,
+          data = timemachine::clim_trends,
           aes(x = .data$x,
               y = .data$y - 9,
               label = .data$label
