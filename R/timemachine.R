@@ -15,6 +15,7 @@
 #' @import tidyr
 #' @import rlang
 #' @import shiny
+#' @import rsconnect
 #'
 #'
 #' @docType package

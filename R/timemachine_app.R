@@ -398,8 +398,9 @@ shinyApp(ui = ui, server = server)
 #-------------------------------------------------------------------------------
 
 # labeller for transients
-transients <- c("PETM", "worst", "best") %>%
-    set_names(nm = c(
+transients <- rlang::set_names(
+    c("PETM", "worst", "best"),
+    nm = c(
         "PETM",
         "Anthropocene (worst case)",
         "Anthropocene (best case)"
