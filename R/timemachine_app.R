@@ -380,6 +380,18 @@ shinyApp(ui = ui, server = server)
 
 }
 
+#' #' Run the Shiny Application
+#' #'
+#' #' @param ... A series of options to be used inside the app.
+#' #'
+#' #' @export
+#' #' @importFrom golem with_golem_options
+#' run_app <- function(...) {
+#'     with_golem_options(
+#'         app = shinyApp(ui = ui, server = server),
+#'         golem_opts = list(...)
+#'     )
+#' }
 
 #-------------------------------------------------------------------------------
 # Not exportet

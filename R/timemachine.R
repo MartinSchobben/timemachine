@@ -14,6 +14,7 @@
 #' @import tibble
 #' @import tidyr
 #' @import rlang
+#' @import shiny
 #'
 #'
 #' @docType package
