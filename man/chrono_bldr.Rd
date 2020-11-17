@@ -8,31 +8,15 @@ chrono_bldr(graph, reverse = FALSE, capture_legend = FALSE)
 }
 \arguments{
 \item{graph}{ggplot object}
+
+\item{reverse}{logical whether the time axis was already reversed}
+
+\item{capture_legend}{logical indicating whether the legend should be
+returned}
 }
 \value{
-ggplot
+A list with ggplot, gtable and grob elements
 }
 \description{
 Chronostratigraphic columns for ggplot
-}
-\examples{
-library(tidyverse)
-library(pangaear)
-#  Westherold et al 2020 ref curve on Pangaea database
-Ceno_doi <- pg_search('Cenozoic global reference benthic carbon and oxygen isotope dataset (CENOGRID)')
-CD_iso_dat <- pg_data(Ceno_doi$doi)
-ref_curve <- CD_iso_dat[[24]]$data
-
-gg_iso <- ggplot(ref_curve,
-  aes(x = `Tuned time [Ma]`,
-      y = `Foram bent δ18O [‰ PDB] (VPDB)`,
-      color = `Reference (benthic Source)`
-      )
-      ) +
-  geom_point() +
-  geom_line () +
-  scale_x_continuous(trans = "reverse", expand = c(0,0)) +
-  coord_cartesian(xlim = c(55, 50), expand=FALSE)
-
-gg_lst <- chrono_bldr(gg_iso, reverse = TRUE)
 }

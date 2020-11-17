@@ -23,4 +23,10 @@ Imports:
     dplyr,
     tibble,
     tidyr,
-    rlang
+    rlang,
+    RColorBrewer,
+    broom,
+    ggrepel,
+    purrr,
+    shinythemes,
+    gridExtra

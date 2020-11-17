@@ -43,4 +43,4 @@ chrono_chart <- tibble(
   )
 
 # create dataset
-usethis::use_data(chrono_chart, overwrite = TRUE)
+usethis::use_data(chrono_chart, overwrite = TRUE, internal = TRUE)

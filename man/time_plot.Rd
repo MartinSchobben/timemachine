@@ -17,7 +17,7 @@ time_plot(df, time, proxy, events = TRUE, explain = FALSE, range_sh = NULL)
 
 \item{explain}{logical whether the labels include explanatory data}
 
-\item{range_sh}{}
+\item{range_sh}{the range of the window selected}
 }
 \value{
 ggplot

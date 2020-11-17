@@ -5,5 +5,6 @@
 \alias{timemachine}
 \title{timemachine}
 \description{
-My own handy functions
+This is an educational package to learn about past, present and future
+climate
 }

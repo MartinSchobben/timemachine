@@ -104,5 +104,5 @@ CMIP5 <- readRDS("data-raw/clim_model_predict.rds") %>%
 temp_curve <- bind_rows(Westherhold2020ScMag , Marcot2013ScMag, HadCRUT4, CMIP5) %>%
   drop_na(Proxy)
 
-usethis::use_data(temp_curve, overwrite = TRUE)
+usethis::use_data(temp_curve, overwrite = TRUE, internal = TRUE)
 

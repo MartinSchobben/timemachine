@@ -9,7 +9,8 @@
 #' @export
 curve_fit <- function(df, time, proxy) {
 
-# With inspiration from: the simplest model for the NLS curve fitting https://rpubs.com/mengxu/exponential-model
+# With inspiration from: the simplest model for the NLS curve fitting
+# https://rpubs.com/mengxu/exponential-model
 
   time <- enquo(time)
   proxy <- enquo(proxy)
@@ -22,8 +23,9 @@ curve_fit <- function(df, time, proxy) {
     )
 
   # carrying capacity (saturation point) upper asymptotic bound
-  K <- max(pull(df, sc.proxy))
-  P0 <- filter(df, sc.age == min(pull(df, sc.age))) %>% pull(sc.proxy)
+  K <- max(pull(df, .data$sc.proxy))
+  P0 <- filter(df, .data$sc.age == min(pull(df, .data$sc.age))) %>%
+    pull(.data$sc.proxy)
 
   # Estimate the rest parameters using a linear model
   model.0 <- lm(log(sc.proxy)~sc.age, data = df)
@@ -39,14 +41,27 @@ curve_fit <- function(df, time, proxy) {
   scal <- -1 / beta.0
 
   model_lm <- lm(sc.proxy~sc.age, df)
-  model_exp <- nls(sc.proxy ~ alpha * exp(beta * sc.age), data = df, start = start)
-  model_logistic <- try(nls(sc.proxy ~ SSlogis(sc.age, K, xmid, scal), data = df), silent = TRUE)
+  model_exp <- nls(sc.proxy ~ alpha * exp(beta * sc.age),
+                   data = df,
+                   start = start
+                   )
+  model_logistic <- try(
+    nls(sc.proxy ~ SSlogis(sc.age, K, xmid, scal), data = df),
+    silent = TRUE
+    )
   model_ls <- lst(model_lm, model_exp, model_logistic)
 
   # extract model sigma
-  sigma_vc <- map_dbl(model_ls, possibly(function(x) {pull(broom::glance(x), "sigma")}, NA_real_))
+  sigma_vc <- purrr::map_dbl(model_ls,
+                             purrr::possibly(
+                               function(x) {pull(broom::glance(x), "sigma")},
+                               NA_real_
+                               )
+                             )
+
   sigma <- sigma_vc[which(sigma_vc == min(sigma_vc, na.rm = TRUE))]
   name_model <- names(sigma)
+
   # select model with lowest sigma
   model <-  model_ls[[name_model]]
   expr_formula <- form_generator(model, name_model, min(pull(df, {{proxy}})))

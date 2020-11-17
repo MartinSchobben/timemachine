@@ -1,9 +1,10 @@
 #' The time machine app
 #'
+#' @param ... no entries suported here
 #' @return shiny app
 #'
 #' @export
-timemachine_App <- function(...) {
+timemachine_app <- function(...) {
 
 ui <- fluidPage(
     tabsetPanel(
@@ -23,7 +24,10 @@ ui <- fluidPage(
 #-------------------------------------------------------------------------------
                         column(
                             h4("Overview"),
-                            p(em("Select an area on this plot to zoom in on an interval.")),
+                            p(em("Select an area on this plot to zoom in on an
+                                 interval."
+                                 )
+                              ),
                             width = 5,
                             plotOutput(
                                 "plot1",
@@ -89,7 +93,10 @@ ui <- fluidPage(
         fluidRow(
             sidebarPanel(
                 h4("Model rate of climate change"),
-                p(em("The rate of climate change captured in a mathematical expression.")),
+                p(em("The rate of climate change captured in a mathematical
+                     expression."
+                     )
+                  ),
                 br(),
                 actionButton("simulate", "Fit curve"),
                 br(),
@@ -97,7 +104,10 @@ ui <- fluidPage(
                 textOutput("model_txt"),
                 uiOutput("model_formula"),
                 br(),
-                p(em("Select an area on the fitted curve and click on button to calculate rate.")),
+                p(em("Select an area on the fitted curve and click on button to
+                     calculate rate."
+                     )
+                  ),
                 br(),
                 actionButton("calculate", "Calculate rate of change"),
                 br(),
@@ -152,9 +162,9 @@ server <- function(input, output) {
             )
     })
 
-    proxy1 <- reactive(strat_plot1() %>% pluck("original"))
-    chrono1 <- reactive(strat_plot1() %>% pluck("chrono") %>% plot)
-    legbox <- reactive(strat_plot1() %>% pluck("legbox") %>% plot)
+    proxy1 <- reactive(strat_plot1() %>% purrr::pluck("original"))
+    chrono1 <- reactive(strat_plot1() %>% purrr::pluck("chrono") %>% plot)
+    legbox <- reactive(strat_plot1() %>% purrr::pluck("legbox") %>% plot)
 
 #-------------------------------------------------------------------------------
 # Overview plot
@@ -192,8 +202,8 @@ server <- function(input, output) {
             )
         )
 
-    proxy2 <- reactive(strat_plot2() %>% pluck("original"))
-    chrono2 <- reactive(strat_plot2() %>% pluck("chrono") %>% plot)
+    proxy2 <- reactive(strat_plot2() %>% purrr::pluck("original"))
+    chrono2 <- reactive(strat_plot2() %>% purrr::pluck("chrono") %>% plot)
 
 #-------------------------------------------------------------------------------
 # Brush 1
@@ -229,12 +239,14 @@ server <- function(input, output) {
 
         switch(
             input$events,
-            PETM = filter(temp_curve, between(Age, 55.835, 56.135)),
-            worst = filter(temp_curve, Age < 10^-3, scenario == "0" |
-                               scenario == "2"
+            PETM = filter(temp_curve, between(.data$Age, 55.835, 56.135)),
+            worst = filter(temp_curve, .data$Age < 10^-3,
+                           .data$scenario == "0" |
+                               .data$scenario == "2"
                            ),
-            best = filter(temp_curve,  Age < 10^-3, scenario == "0" |
-                              scenario == "1"
+            best = filter(temp_curve,  .data$Age < 10^-3,
+                          .data$scenario == "0" |
+                              .data$scenario == "1"
                           )
             )
         }
@@ -251,8 +263,8 @@ server <- function(input, output) {
     # make a line
     curve <- reactive({
         lst(geom_line(
-                  data = pluck(fit(), "df") ,
-                  aes(x = Age, y = Proxy),
+                  data = purrr::pluck(fit(), "df") ,
+                  aes(x = .data$Age, y = .data$Proxy),
                   color = "red",
                   size = 1.1,
                   inherit.aes = FALSE
@@ -265,10 +277,10 @@ server <- function(input, output) {
 #-------------------------------------------------------------------------------
 # Transient overview plot
 #-------------------------------------------------------------------------------
-    proxy3 <- reactive({strat_plot3() %>% pluck("original") +
+    proxy3 <- reactive({strat_plot3() %>% purrr::pluck("original") +
                            theme(legend.position = "top")
                         })
-    chrono3 <- reactive(strat_plot3() %>% pluck("chrono") %>% plot)
+    chrono3 <- reactive(strat_plot3() %>% purrr::pluck("chrono") %>% plot)
     output$chrono3 <- renderPlot({chrono3()})
 
 #-------------------------------------------------------------------------------
@@ -291,9 +303,12 @@ server <- function(input, output) {
 
     # make a formula
     observeEvent(input$simulate, {
-        output$model_formula <- renderUI(withMathJax(pluck(fit(), "form")))
+        output$model_formula <- renderUI({withMathJax(purrr::pluck(fit(),
+                                                                  "form")
+                                                     )
+                                          })
         output$model_txt <- renderText({
-            switch(pluck(fit(), "sel_mdl"),
+            switch(purrr::pluck(fit(), "sel_mdl"),
                    model_lm = LC_txt,
                    model_exp = JC_txt,
                    model_logistic = SC_txt
@@ -310,7 +325,7 @@ server <- function(input, output) {
            period <- diff(ranges2$x) * 10 ^ 6 # year
            temp <- diff(ranges2$y)  # degree Celsius
            rate <- temp / period
-           return(paste0(sprintf("%.3g", rate), " °C / year"))
+           return(paste0(sprintf("%.3g", rate), " \u00B0 C / year"))
        }
        })
 
@@ -345,7 +360,7 @@ server <- function(input, output) {
 # If so, zoom to the brush bounds; if not, reset the zoom.
 #-------------------------------------------------------------------------------
     observeEvent(input$plot3_brush, {
-        brush2 <- brushedPoints(pluck(fit(), "df"), input$plot3_brush)
+        brush2 <- brushedPoints(purrr::pluck(fit(), "df"), input$plot3_brush)
         if (!is.null(brush2)) {
             ranges2$x <- c(min(brush2$Age) , max(brush2$Age))
             ranges2$y <-c(min(brush2$Proxy) , max(brush2$Proxy))
@@ -371,36 +386,108 @@ shinyApp(ui = ui, server = server)
 #-------------------------------------------------------------------------------
 
 # labeller for transients
-transients <- c("PETM", "worst", "best") %>% set_names(nm = c("PETM", "Anthropocene (worst case)", "Anthropocene (best case)"))
+transients <- c("PETM", "worst", "best") %>%
+    set_names(nm = c(
+        "PETM",
+        "Anthropocene (worst case)",
+        "Anthropocene (best case)"
+        )
+        )
 
 # climate text
-PETM_txt <- HTML(paste0("The Paleocene-Eocene Thermal Maximum (PETM; ~56 Ma) is one of the most studied geological intervals of extreme climate change. This particular event is associated with rapidly increasing global temperatures, known as a hyperthermal. The temperature rise has been attributed to the melting of methane in an ice-like state stored in the seabed and/or CO", tags$sub("2"), " release by massive volcanism. This make it an interesting interval to compare with the modern situation."))
-scenario1_txt <- HTML(paste0("The Anthropocene (> 1850 AD = 0.1 Kya on plot) is the latest geological interval. This interval is coined after the unprecedented footprint left by humankind (anthro = human) on the Earth system as a whole. The depicted modelled future projection is the most optimistic scenario of human-induced climate change. These scenario are callled Representative
-Concentration Pathways (RCPs), where the number represents the relative to pre-industrial increase of radiative forcing in watts per metre squared. In this optimistic scenario, known as RCP2.6, it is suggested that humankind can come-up with solutions to curb the injection of fossil carbon, and emissions are 14% to 96% of what they were in 1990 AD by the year 2050 AD", tags$sup("6,"), tags$sup("7"), "."))
-scenario2_txt <- HTML(paste0("The Anthropocene (> 1850 AD = 0.1 Kya on plot) is the latest geological interval. This interval is coined after the unprecedented footprint left by humankind (anthro = human) on the Earth system as a whole. The depicted modelled future projection is the most pesimistic scenario of human-induced climate change. These scenario are callled Representative
-Concentration Pathways (RCPs), where the number represents the relative to pre-industrial increase of radiative forcing in watts per metre squared. In this pestimistic scenario, known as RCP8.5, often referred to as business as usual, it is suggested that humankind will do nothing to reduce emmisions as we exploit more-and-more of the fossil fuel reserves", tags$sup("6,"), tags$sup("7"), "."))
+PETM_txt <- HTML(paste0("The Paleocene-Eocene Thermal Maximum (PETM; ~56 Ma) is
+                        one of the most studied geological intervals of extreme
+                        climate change. This particular event is associated with
+                        rapidly increasing global temperatures, known as a
+                        hyperthermal. The temperature rise has been attributed
+                        to the melting of methane in an ice-like state stored in
+                        the seabed and/or CO", tags$sub("2"), " release by
+                        massive volcanism. This make it an interesting interval
+                        to compare with the modern situation."
+                        )
+                 )
+scenario1_txt <- HTML(paste0("The Anthropocene (> 1850 AD = 0.1 Kya on plot) is
+                             the latest geological interval. This interval is
+                             coined after the unprecedented footprint left by
+                             humankind (anthro = human) on the Earth system as a
+                             whole. The depicted modelled future projection is
+                             the most optimistic scenario of human-induced
+                             climate change. These scenario are callled
+                             Representative Concentration Pathways (RCPs), where
+                             the number represents the relative to
+                             pre-industrial increase of radiative forcing in
+                             watts per metre squared. In this optimistic
+                             scenario, known as RCP2.6, it is suggested that
+                             humankind can come-up with solutions to curb the
+                             injection of fossil carbon, and emissions are
+                             14% to 96% of what they were in 1990 AD by the year
+                             2050 AD", tags$sup("6,"), tags$sup("7"), "."
+                             )
+                      )
+scenario2_txt <- HTML(paste0("The Anthropocene (> 1850 AD = 0.1 Kya on plot) is
+                             the latest geological interval. This interval is
+                             coined after the unprecedented footprint left by
+                             humankind (anthro = human) on the Earth system as
+                             a whole. The depicted modelled future projection is
+                             the most pesimistic scenario of human-induced
+                             climate change. These scenario are callled
+                             Representative Concentration Pathways (RCPs), where
+                             the number represents the relative to
+                             pre-industrial increase of radiative forcing in
+                             watts per metre squared. In this pestimistic
+                             scenario, known as RCP8.5, often referred to as
+                             business as usual, it is suggested that humankind
+                             will do nothing to reduce emmisions as we exploit
+                             more-and-more of the fossil fuel reserves",
+                             tags$sup("6,"), tags$sup("7"), "."
+                             )
+                      )
 
 # math text
 LC_txt <- "Linear curve: Has a constant rate of change."
-JC_txt <- "The J (exponential) curve: Has a rate of change that is proportional to the time unit, causing unbounded acceleration."
-SC_txt <- "The S (logistic) curve: The exponential curve is bounded by an upper limit."
+JC_txt <- "The J (exponential) curve: Has a rate of change that is proportional
+          to the time unit, causing unbounded acceleration."
+SC_txt <- "The S (logistic) curve: The exponential curve is bounded by an upper
+          limit."
 
 # references
-ref1 <- h6("1) Westherhold et al., 2020. An astronomically dated record of Earth's climate and its predictability over the last 66 million years. Science 369: 1383-1388 (PANGAEA DOI:", a(href=paste0("https://doi.pangaea.de/10.1594/PANGAEA.917503"), "10.1594/PANGAEA.917503"), ")")
-ref2 <- h6("2) Marcott et al., 2013. A reconstruction of regional and global temperature for the past 11,300 years. Science 339: 1198-1201")
-ref3 <- h6("3) Climatic Research Unit (University of East Anglia) and Met Office")
+ref1 <- h6("1) Westherhold et al., 2020. An astronomically dated record of
+           Earth's climate and its predictability over the last 66 million
+           years. Science 369: 1383-1388 (PANGAEA DOI:",
+           a(href=paste0("https://doi.pangaea.de/10.1594/PANGAEA.917503"),
+             "10.1594/PANGAEA.917503"), ")"
+           )
+ref2 <- h6("2) Marcott et al., 2013. A reconstruction of regional and global
+           temperature for the past 11,300 years. Science 339: 1198-1201"
+           )
+ref3 <- h6("3) Climatic Research Unit (University of East Anglia) and Met
+           Office"
+           )
 ref4 <- h6(a(href="https://climate4impact.eu/", "4) Climate4impact"))
-ref5 <- h6(a(href="https://www.wcrp-climate.org/", "5) World Climate Research Program"))
-ref6 <- h6("6) Hansen et al., 2013. Climate sensitivity, sea level and atmospheric carbon dioxide. Philosophical Transactions of the Royal Society A: Mathematical, Physical and Engineering Sciences 371: 1-31")
-ref7 <- h6("7) IPCC, 2013: Climate Change 2013: The Physical Science Basis. Contribution of Working Group I to the Fifth Assessment Report of the Intergovernmental Panel on Climate Change [Stocker, T.F., D. Qin, G.-K. Plattner, M. Tignor, S.K. Allen, J. Boschung, A. Nauels, Y. Xia, V. Bex and P.M. Midgley (eds.)]. Cambridge University Press, Cambridge, United Kingdom and New York, NY, USA, 1535 pp.")
+ref5 <- h6(a(href="https://www.wcrp-climate.org/", "5) World Climate Research
+             Program"
+             )
+           )
+ref6 <- h6("6) Hansen et al., 2013. Climate sensitivity, sea level and
+           atmospheric carbon dioxide. Philosophical Transactions of the Royal
+           Society A: Mathematical, Physical and Engineering Sciences 371: 1-31"
+           )
+ref7 <- h6("7) IPCC, 2013: Climate Change 2013: The Physical Science Basis.
+           Contribution of Working Group I to the Fifth Assessment Report of
+           the Intergovernmental Panel on Climate Change [Stocker, T.F., D.
+           Qin, G.-K. Plattner, M. Tignor, S.K. Allen, J. Boschung, A. Nauels,
+           Y. Xia, V. Bex and P.M. Midgley (eds.)]. Cambridge University Press,
+           Cambridge, United Kingdom and New York, NY, USA, 1535 pp."
+           )
 
 # Fig caption
 fig_cap <- tags$figcaption(
     HTML(
-        paste0("Data sources; sediments (benthic foraminifera &delta;",
-               tags$sup("18"), "O from ref. 1 and composite curve from ref. 2) instrumental (HadCRUT4)",
-               tags$sup("3"), ", model (BCC_CM1)", tags$sup("4"), ". ",
-               "&delta;",tags$sup("18"), "O conversion to temperature after ref 5."
+        paste0("Data sources; sediments (benthic foraminifera \u03B4",
+               tags$sup("18"), "O from ref. 1 and composite curve from ref.
+               2) instrumental (HadCRUT4)", tags$sup("3"), ", model (BCC_CM1)",
+               tags$sup("4"), ". ", "\u03B4",tags$sup("18"), "O conversion to
+               temperature after ref 5."
         )
     )
 )
