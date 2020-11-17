@@ -2,12 +2,6 @@
 # This script accumulates all data
 #-------------------------------------------------------------------------------
 
-# required packages and functions
-library(tidyverse)
-library(RCurl)
-library(pangaear)
-source("functions/read_instrum_data.R")
-
 #-------------------------------------------------------------------------------
 # Westherold et al 2020 Science magazine del18O based temperature curve
 #-------------------------------------------------------------------------------
@@ -16,11 +10,12 @@ source("functions/read_instrum_data.R")
 Hansen_ice_light <- function(x) 5 - 8 * ((x - 1.75) / 3) # Equation 3.5
 Hansen_ice_heavy <- function(x) 1 - 4.4 * ((x - 3.25) / 3) # Equation 3.6
 Hansen_hot <- function(x) -4 * x + 12 # Equation 3.1
-Hansen_surf_Pleis <-
 
-library(pangaear)
+
 # Pangaea database download
 Ceno_doi <- pg_search('Cenozoic global reference benthic carbon and oxygen isotope dataset (CENOGRID)')
+# save DOI
+saveRDS(Ceno_doi, file = "data/WestherholdDOI.RDS")
 CD_iso_dat <- pg_data(Ceno_doi$doi)
 Westherhold2020ScMag <- CD_iso_dat[[24]]$data %>%
   transmute(
@@ -89,7 +84,9 @@ HadCRUT4 <- read_cru_hemi("https://crudata.uea.ac.uk/cru/data/temperature/HadSST
     )
 
 # for the last 14 years
-meanMeasurement <- filter(HadCRUT4, between(Age, -0.000070, -0.000056)) %>% pull(Proxy) %>%  mean()
+meanMeasurement <- filter(HadCRUT4, between(Age, -0.000070, -0.000056)) %>%
+  pull(Proxy) %>%
+  mean()
 
 #-------------------------------------------------------------------------------
 # Beijing GMIP 5 GCM model data up to 2100
@@ -97,7 +94,7 @@ meanMeasurement <- filter(HadCRUT4, between(Age, -0.000070, -0.000056)) %>% pull
 
 CMIP5 <- readRDS("data-raw/clim_model_predict.rds") %>%
   group_by(scenario) %>%
-  mutate(base = mean(head(Proxy,14)),
+  mutate(base = mean(head(Proxy, 14)),
          Proxy = (Proxy - base) + meanMeasurement,
          Age = (1950 - Age)/10^6,
          record = "model"
@@ -111,4 +108,5 @@ CMIP5 <- readRDS("data-raw/clim_model_predict.rds") %>%
 temp_curve <- bind_rows(Westherhold2020ScMag , Marcot2013ScMag, HadCRUT4, CMIP5) %>%
   drop_na(Proxy)
 
-saveRDS(temp_curve, file = "data/temp_curve.RDS")
+usethis::use_data(temp_curve, overwrite = TRUE)
+

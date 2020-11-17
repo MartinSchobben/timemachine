@@ -5,7 +5,7 @@
 library(tidyverse)
 library(rlang)
 
-# the simplest model https://rpubs.com/mengxu/exponential-model
+# the simplest model for the NLS curve fitting https://rpubs.com/mengxu/exponential-model
 
 curve_fit <- function(df, time, proxy) {
 
@@ -47,7 +47,7 @@ curve_fit <- function(df, time, proxy) {
   name_model <- names(sigma)
   # select model with lowest sigma
   model <-  model_ls[[name_model]]
-  expr_formula <- form_generator(model, name_model)
+  expr_formula <- form_generator(model, name_model, min(pull(df, {{proxy}})))
 
   if(max(pull(df, {{time}})) > 0.1) int <- 10^-3 else int <- 10^-5
 
@@ -59,7 +59,7 @@ curve_fit <- function(df, time, proxy) {
 
 
 
-form_generator <- function(model, type){
+form_generator <- function(model, type, asym){
 
   coefs <- coef(model)
   if (type == "model_logistic"){
@@ -75,9 +75,9 @@ form_generator <- function(model, type){
 
   switch(
     type,
-    model_lm = paste0("$$Temp = ",a ," + ",b ,"Age$$"),
-    model_exp = paste0("$$Temp = ",a ,"\\exp^{",b ,"Age}$$"),
-    model_logistic = paste0("$$Temp = \\frac{",a ,"}{1 + \\exp^{",b ,"Age}}$$")
+    model_lm = paste0("$$Temp = ",a + asym ," + ",b ,"Age$$"),
+    model_exp = paste0("$$Temp = ",a ,"\\exp^{",b ,"Age} + ", sprintf(fmt = "%.1e", asym), "$$"),
+    model_logistic = paste0("$$Temp = \\frac{",a ,"}{1 + \\exp^{",b ,"Age}} + ", sprintf(fmt = "%.1e", asym), "$$")
     )
 
 }

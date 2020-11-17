@@ -8,8 +8,8 @@ theme_set(theme_classic())
 
 time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE, range_sh = NULL){
 
-  clim_transients <- readRDS("data/clim_transients.RDS") # get labeled events
-  clim_trends <- readRDS("data/clim_trends.RDS") # get labeled events
+  # clim_transients <- readRDS("data/clim_transients.RDS") # get labeled events
+  # clim_trends <- readRDS("data/clim_trends.RDS") # get labeled events
   dark <- RColorBrewer::brewer.pal(3, "Dark2")
   col_pal <- c(
     "sediments" = dark[3] ,
@@ -23,7 +23,11 @@ time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE, range_sh 
   p <- ggplot(df, aes(x ={{time}}, y = {{proxy}}, color = record, group = scenario)) +
     geom_line() +
     scale_color_manual("", values = col_pal) +
-    ylab("Temperature (°C)")
+    ylab("Temperature (°C)") +
+    theme(
+      legend.key.size = unit(0.1, "npc"),
+      legend.text = element_text(size = 11)
+    )
 
   if (events) {
     if (explain) {

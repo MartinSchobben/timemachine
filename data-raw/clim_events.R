@@ -2,10 +2,10 @@
 # This script list all major climatic events as plot elements
 #-------------------------------------------------------------------------------
 
-# required packages and functions
-library(tidyverse)
-temp_curve <- readRDS("data/temp_curve.RDS") # get temp data
-approx_y <- function(x) filter(temp_curve, abs(Age - x) == min(abs(Age - x))) %>% pull(Proxy) # find closed value on curve
+approx_y <- function(x) {
+  filter(temp_curve, abs(Age - x) == min(abs(Age - x))) %>%
+    pull(Proxy) # find closed value on curve
+  }
 
 clim_trends <- tibble(
   xmin = c(49, 15, 3.025),
@@ -19,7 +19,7 @@ clim_trends <- tibble(
     )
 )
 
-saveRDS(clim_trends , file = "data/clim_trends.RDS")
+usethis::use_data(clim_trends, overwrite = TRUE)
 
 clim_transients <-tibble(
   label = c(
@@ -44,4 +44,5 @@ clim_transients <-tibble(
 
 )
 
-saveRDS(clim_transients, file = "data/clim_transients.RDS")
+usethis::use_data(clim_transients, overwrite = TRUE)
+

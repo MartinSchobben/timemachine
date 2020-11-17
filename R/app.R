@@ -1,32 +1,9 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-library(tidyverse)
-library(shiny)
-library(Cairo)   # For nicer ggplot2 output when deployed on Linux
-library(miscutils)
-temp_curve <- readRDS("data/temp_curve.RDS") # get temp data
-source("functions/timeplot.R") # get plot function
-source("functions/climchange_model.R") # get model function
-transients <- c("PETM", "worst", "best") %>% set_names(nm = c("PETM", "Anthropocene (worst case)", "Anthropocene (best case)"))
-
-PETM_txt <- "The Paleocene-Eocene Thermal Maximum (PETM;  56 Ma) is one of the most studied geological interval of extreme climate change. This particular event is associated with rapidly increasing global temperatures, known as a hyperthermal. The temperature rise has been attributed to the melting of methane in an ice-like state stored in the seabed and CO2 release by massive volcanism. This make it an intersting interval to compare with the modern situation."
-scenario1_txt <- paste0("The Anthropocene (> 1850 AD = 0.1 Kya on plot) is the latest geological interval. This interval is coined after the unprecedented footprint left by humankind (anthro = human) on the Earth system as a whole. The depicted modelled future projection is the most optimistic scenario of human-induced climate change. These scenario are callled Representative
-Concentration Pathways (RCPs), where the number represents the relative to pre-industrial increase of radiative forcing in watts per metre squared. In this optimistic scenario, known as RCP2.6, it is suggested that humankind can come-up with solutions to curb the injection of fossil carbon, and emissions are 14% to 96% of what they were in 1990 AD by the year 2050 AD.", tags$sup("5"), tags$sup("6"))
-scenario2_txt <- HTML(paste0("The Anthropocene (> 1850 AD = 0.1 Kya on plot) is the latest geological interval. This interval is coined after the unprecedented footprint left by humankind (anthro = human) on the Earth system as a whole. The depicted modelled future projection is the most pesimistic scenario of human-induced climate change. These scenario are callled Representative
-Concentration Pathways (RCPs), where the number represents the relative to pre-industrial increase of radiative forcing in watts per metre squared. In this pestimistic scenario, known as RCP8.5, often referred to as business as usual, it is suggested that humankind will do nothing to reduce emmisions as we exploit more-and-more of the fossil fuel reserves.", tags$sup("5"), tags$sup("6")))
-LC_txt <- "Linear curve: Has a constant rate of change."
-JC_txt <- "The J (exponential) curve: Has a rate of change that is proportional to the time unit, causing unbounded acceleration."
-SC_txt <- "The S (logistic) curve: The exponential curve is bounded by an upper limit."
-
-
-# zoom plot plot background
-bkgr <- rgb(241, 241, 241, maxColorValue = 251)
+#' The time machine app
+#'
+#' @return shiny app
+#'
+#' @export
+timemachine_App <- function(...) {
 
 ui <- fluidPage(
     tabsetPanel(
@@ -46,6 +23,7 @@ ui <- fluidPage(
 #-------------------------------------------------------------------------------
                         column(
                             h4("Overview"),
+                            p(em("Select an area on this plot to zoom in on an interval.")),
                             width = 5,
                             plotOutput(
                                 "plot1",
@@ -59,21 +37,7 @@ ui <- fluidPage(
                                 "chrono1",
                                 height = 100
                                 ),
-                            tags$figcaption(
-                                HTML(
-                                    paste0(
-                                        "Select an area on this plot to zoom in
-                                        on an interval. Data sources; sediments
-                                        (benthic foraminifera &delta;",
-                                        tags$sup("18"), "O from ref. 1 and
-                                        composite curve from ref. 2)
-                                        instrumental (HadCRUT4)", tags$sup("3"),
-                                        ", model (BCC_CM1)", tags$sup("4"),
-                                        "&delta;",tags$sup("18"), ". O
-                                        conversion to temperature after ref 5."
-                                        )
-                                    )
-                                )
+                            fig_cap
                             ),
 #-------------------------------------------------------------------------------
 # Legend
@@ -98,19 +62,7 @@ ui <- fluidPage(
 #-------------------------------------------------------------------------------
 # References
 #-------------------------------------------------------------------------------
-            fluidRow(
-                HTML('<hr style="color: purple;">'),
-                column(
-                    width = 12,
-                    h4("References"),
-                    h6("1) Westherhold et al., 2020. An astronomically dated record of Earth's climate and its predictability over the last 66 million years. Science 369: 1383-1388"),
-                    h6("2) Marcott et al., 2013. A Reconstruction of Regional and Global Temperature for the Past 11,300 Years. Science 339: 1198-1201"),
-                    h6("3) Climatic Research Unit (University of East Anglia) and Met Office"),
-                    a(href="https://climate4impact.eu/", "4) Climate4impact")
-
-                    )
-                )
-
+                     ref_row
         ),
 #-------------------------------------------------------------------------------
 # Tab panel 2
@@ -137,16 +89,16 @@ ui <- fluidPage(
         fluidRow(
             sidebarPanel(
                 h4("Model rate of climate change"),
-                p(em("The rate of climate change captured in a mathematical
-                     expression."
-                     )
-                  ),
+                p(em("The rate of climate change captured in a mathematical expression.")),
                 br(),
                 actionButton("simulate", "Fit curve"),
                 br(),
                 br(),
                 textOutput("model_txt"),
                 uiOutput("model_formula"),
+                br(),
+                p(em("Select an area on the fitted curve and click on button to calculate rate.")),
+                br(),
                 actionButton("calculate", "Calculate rate of change"),
                 br(),
                 br(),
@@ -157,9 +109,8 @@ ui <- fluidPage(
 #-------------------------------------------------------------------------------
             column(
                 width = 4,
-                textOutput("text1"),
-                plotOutput("legend2", height = 100)
-            ),
+                htmlOutput("text1")
+                ),
 #-------------------------------------------------------------------------------
 # Plot
 #-------------------------------------------------------------------------------
@@ -171,28 +122,14 @@ ui <- fluidPage(
                                resetOnNew = TRUE
                                )
                            ),
-                plotOutput("chrono3", height = 100)
+                plotOutput("chrono3", height = 100),
+                fig_cap
                 )
             ),
 #-------------------------------------------------------------------------------
 # References
 #-------------------------------------------------------------------------------
-        fluidRow(
-            HTML('<hr style="color: purple;">'),
-            column(
-                width = 12,
-                h4("References"),
-                h6("1) Westherhold et al., 2020. An astronomically dated record of Earth's climate and its predictability over the last 66 million years. Science 369: 1383-1388"),
-                h6("2) Marcott et al., 2013. A Reconstruction of Regional and Global Temperature for the Past 11,300 Years. Science 339: 1198-1201"),
-                h6("3) Climatic Research Unit (University of East Anglia) and Met Office"),
-                h6(a(href="https://climate4impact.eu/", "4) Climate4impact")),
-                h6(a(href="https://www.wcrp-climate.org/", "5) World Climate Research Program")),
-                h6("6) IPCC, 2013: Climate Change 2013: The Physical Science Basis. Contribution of Working Group I to the Fifth Assessment Report of the Intergovern-
-mental Panel on Climate Change [Stocker, T.F., D. Qin, G.-K. Plattner, M. Tignor, S.K. Allen, J. Boschung, A. Nauels, Y. Xia, V. Bex and P.M. Midgley
-(eds.)]. Cambridge University Press, Cambridge, United Kingdom and New York, NY, USA, 1535 pp.")
-
-            )
-        )
+            ref_row
         )
 )
 )
@@ -209,10 +146,11 @@ server <- function(input, output) {
     ranges2 <- reactiveValues(x = NULL, y = NULL)
 
 
-    strat_plot1 <- reactive(chrono_bldr(time_plot(temp_curve, Age, Proxy),
-                                        capture_legend = TRUE
-                                        )
-                            )
+    strat_plot1 <- reactive({
+        chrono_bldr(
+            time_plot(temp_curve, Age, Proxy), capture_legend = TRUE
+            )
+    })
 
     proxy1 <- reactive(strat_plot1() %>% pluck("original"))
     chrono1 <- reactive(strat_plot1() %>% pluck("chrono") %>% plot)
@@ -323,10 +261,13 @@ server <- function(input, output) {
         }
         )
 
+
 #-------------------------------------------------------------------------------
 # Transient overview plot
 #-------------------------------------------------------------------------------
-    proxy3 <- reactive(strat_plot3() %>% pluck("original"))
+    proxy3 <- reactive({strat_plot3() %>% pluck("original") +
+                           theme(legend.position = "top")
+                        })
     chrono3 <- reactive(strat_plot3() %>% pluck("chrono") %>% plot)
     output$chrono3 <- renderPlot({chrono3()})
 
@@ -359,13 +300,10 @@ server <- function(input, output) {
                    )
                    })
         output$plot3 <- renderPlot({proxy3() + curve()})
-        }
-        )
-
+        })
 
    # calculate rates
    rate_estimate <- reactive({
-
        if (is.null(ranges2$x) |button2$result == FALSE) {
            return()
        } else {
@@ -374,8 +312,7 @@ server <- function(input, output) {
            rate <- temp / period
            return(paste0(sprintf("%.3g", rate), " °C / year"))
        }
-       }
-       )
+       })
 
     output$avg_rate <- renderText({rate_estimate()})
 
@@ -386,10 +323,7 @@ server <- function(input, output) {
         output$plot3 <- renderPlot({proxy3()})
         output$model_formula <- renderUI(NULL)
         output$model_txt <- renderText(NULL)
-        # ranges2$x <- NULL
-        # ranges2$y <- NULL
-    }
-    )
+    })
 
 #-------------------------------------------------------------------------------
 # reactive value to flip action buttion number two back to original state
@@ -428,3 +362,58 @@ server <- function(input, output) {
 #-------------------------------------------------------------------------------
 # Run the application
 shinyApp(ui = ui, server = server)
+
+}
+
+
+#-------------------------------------------------------------------------------
+# Not exportet
+#-------------------------------------------------------------------------------
+
+# labeller for transients
+transients <- c("PETM", "worst", "best") %>% set_names(nm = c("PETM", "Anthropocene (worst case)", "Anthropocene (best case)"))
+
+# climate text
+PETM_txt <- HTML(paste0("The Paleocene-Eocene Thermal Maximum (PETM;  56 Ma) is one of the most studied geological intervals of extreme climate change. This particular event is associated with rapidly increasing global temperatures, known as a hyperthermal. The temperature rise has been attributed to the melting of methane in an ice-like state stored in the seabed and/or CO", tags$sub("2"), " release by massive volcanism. This make it an interesting interval to compare with the modern situation."))
+scenario1_txt <- HTML(paste0("The Anthropocene (> 1850 AD = 0.1 Kya on plot) is the latest geological interval. This interval is coined after the unprecedented footprint left by humankind (anthro = human) on the Earth system as a whole. The depicted modelled future projection is the most optimistic scenario of human-induced climate change. These scenario are callled Representative
+Concentration Pathways (RCPs), where the number represents the relative to pre-industrial increase of radiative forcing in watts per metre squared. In this optimistic scenario, known as RCP2.6, it is suggested that humankind can come-up with solutions to curb the injection of fossil carbon, and emissions are 14% to 96% of what they were in 1990 AD by the year 2050 AD", tags$sup("6,"), tags$sup("7"), "."))
+scenario2_txt <- HTML(paste0("The Anthropocene (> 1850 AD = 0.1 Kya on plot) is the latest geological interval. This interval is coined after the unprecedented footprint left by humankind (anthro = human) on the Earth system as a whole. The depicted modelled future projection is the most pesimistic scenario of human-induced climate change. These scenario are callled Representative
+Concentration Pathways (RCPs), where the number represents the relative to pre-industrial increase of radiative forcing in watts per metre squared. In this pestimistic scenario, known as RCP8.5, often referred to as business as usual, it is suggested that humankind will do nothing to reduce emmisions as we exploit more-and-more of the fossil fuel reserves", tags$sup("6,"), tags$sup("7"), "."))
+
+# math text
+LC_txt <- "Linear curve: Has a constant rate of change."
+JC_txt <- "The J (exponential) curve: Has a rate of change that is proportional to the time unit, causing unbounded acceleration."
+SC_txt <- "The S (logistic) curve: The exponential curve is bounded by an upper limit."
+
+# references
+ref1 <- h6("1) Westherhold et al., 2020. An astronomically dated record of Earth's climate and its predictability over the last 66 million years. Science 369: 1383-1388 (PANGAEA DOI:", a(href=paste0("https://doi.pangaea.de/10.1594/PANGAEA.917503"), "10.1594/PANGAEA.917503"), ")")
+ref2 <- h6("2) Marcott et al., 2013. A reconstruction of regional and global temperature for the past 11,300 years. Science 339: 1198-1201")
+ref3 <- h6("3) Climatic Research Unit (University of East Anglia) and Met Office")
+ref4 <- h6(a(href="https://climate4impact.eu/", "4) Climate4impact"))
+ref5 <- h6(a(href="https://www.wcrp-climate.org/", "5) World Climate Research Program"))
+ref6 <- h6("6) Hansen et al., 2013. Climate sensitivity, sea level and atmospheric carbon dioxide. Philosophical Transactions of the Royal Society A: Mathematical, Physical and Engineering Sciences 371: 1-31")
+ref7 <- h6("7) IPCC, 2013: Climate Change 2013: The Physical Science Basis. Contribution of Working Group I to the Fifth Assessment Report of the Intergovernmental Panel on Climate Change [Stocker, T.F., D. Qin, G.-K. Plattner, M. Tignor, S.K. Allen, J. Boschung, A. Nauels, Y. Xia, V. Bex and P.M. Midgley (eds.)]. Cambridge University Press, Cambridge, United Kingdom and New York, NY, USA, 1535 pp.")
+
+# Fig caption
+fig_cap <- tags$figcaption(
+    HTML(
+        paste0("Data sources; sediments (benthic foraminifera &delta;",
+               tags$sup("18"), "O from ref. 1 and composite curve from ref. 2) instrumental (HadCRUT4)",
+               tags$sup("3"), ", model (BCC_CM1)", tags$sup("4"), ". ",
+               "&delta;",tags$sup("18"), "O conversion to temperature after ref 5."
+        )
+    )
+)
+
+ref_row <- fluidRow(
+    HTML('<hr style="color: purple;">'),
+    column(
+        width = 12,
+        h4("References"),
+        ref1, ref2, ref3, ref4, ref5, ref6, ref7
+    )
+)
+
+# zoom plot plot background
+bkgr <- rgb(241, 241, 241, maxColorValue = 251)
+
