@@ -1,18 +1,22 @@
-# read_cru_hemi.r
-#
-# Reads a CRU-format hemispheric average file, as provided at
-# http://www.cru.uea.ac.uk/cru/data/temperature
-#
-# Format has two lines for each year.
+#' The read_cru_hemi function on http://www.cru.uea.ac.uk/cru/data/temperature
+#'
+#' @param filename file from the website
+#'
+#' @details Reads a CRU-format hemispheric average file, as provided at
+#' http://www.cru.uea.ac.uk/cru/data/temperature
+#'
+#' Format has two lines for each year.
 #  1) monthly mean anomalies plus an annual mean
 #  2) coverage percentages
-#
-# Returns a data frame with columns:
-#  year (1850 to final year)
-#  annual (mean annual anomaly)
-#  month.1 ... month.12 (mean monthly anomaly)
-#  cover.1 ... cover.12 (percentage coverage)
-#
+#'
+#' Returns a data frame with columns:
+#'  year (1850 to final year)
+#'  annual (mean annual anomaly)
+#'  month.1 ... month.12 (mean monthly anomaly)
+#'  cover.1 ... cover.12 (percentage coverage)
+#'
+#' @return dataframe
+#' @export
 read_cru_hemi <- function(filename) {
   # read in whole file as table
   tab <- read.table(filename,fill=TRUE)

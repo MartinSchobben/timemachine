@@ -1,13 +1,15 @@
-#-------------------------------------------------------------------------------
-# Tidymodel exercise
-#-------------------------------------------------------------------------------
-
-library(tidyverse)
-library(rlang)
-
-# the simplest model for the NLS curve fitting https://rpubs.com/mengxu/exponential-model
-
+#' Fit growth model to climate curve
+#'
+#'
+#' @param df data for curve fitting exercise
+#' @param time variable of time units
+#' @param proxy variable of the proxy
+#'
+#' @return list of elements
+#' @export
 curve_fit <- function(df, time, proxy) {
+
+# With inspiration from: the simplest model for the NLS curve fitting https://rpubs.com/mengxu/exponential-model
 
   time <- enquo(time)
   proxy <- enquo(proxy)
@@ -54,7 +56,15 @@ curve_fit <- function(df, time, proxy) {
   Age <- seq(min(df$sc.age), max(df$sc.age), int)
   pred <- predict(model, list(sc.age = Age)) + (min(pull(df, {{proxy}})) - 0.1)
 
-  return(lst(df = tibble(Age = max(pull(df, {{time}})) - Age, Proxy = pred), form = expr_formula, sel_mdl = names(sigma), model = model))
+  return(lst(
+    df = tibble(
+      Age = max(pull(df, {{time}})) - Age,
+      Proxy = pred
+      ),
+    form = expr_formula,
+    sel_mdl = names(sigma),
+    model = model
+    ))
 }
 
 
