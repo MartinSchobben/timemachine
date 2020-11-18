@@ -10,8 +10,8 @@ approx_y <- function(x) {
 clim_trends <- tibble(
   xmin = c(49, 15, 3.025),
   xmax = c(54, 17, 3.264),
-  x = map2_dbl(xmax, xmin, ~{.y + (.x -.y) / 2}),
-  y = map_dbl(x, ~(approx_y(.x))[1]),
+  x = purrr::map2_dbl(xmax, xmin, ~{.y + (.x -.y) / 2}),
+  y = purrr::map_dbl(x, ~(approx_y(.x))[1]),
   label = c(
     "EarlyEocene Climate Optimum",
     "middle Miocene Climate Optimum",
@@ -39,8 +39,8 @@ clim_transients <-tibble(
     "LGM: Last Glacial Maximum"
     ),
 
-  x = c(55.88, 54.05, 33.7, 23.1, 3.3, 0.018),
-  y = map_dbl(x, ~(approx_y(.x))[1])
+  x = c(55.88, 54.05, 33.7, 23.03, 3.3, 0.018),
+  y = purrr::map_dbl(x, ~(approx_y(.x))[1])
 
 )
 
