@@ -4,20 +4,29 @@ chrono_chart <- tibble(
 # Era
     "Phanerozoic", "Precambrian",
 # Eon
-    "Cenozoic", "Mesozoic", "Palaeozoic",
-    "Neoproterozoic", "Mesoproterozoic", "Palaeoproterozoic",
+    "Cenozoic", "Mesozoic", "Paleozoic",
+    "Neoproterozoic", "Mesoproterozoic", "Paleoproterozoic",
 # Period
-    "Quaternary","Neogene", "Palaeogene", "Cretaceous", "Jurassic",
+    "Quaternary","Neogene", "Paleogene", "Cretaceous", "Jurassic",
     "Triassic", "Permian", " Carboniferous ", "Devonian", "Silurian",
     "Ordovician", "Cambrian", "Ediacaran", "Cryogenian",
     "Tonian", "Stenian","Ectasian", "Calymmian",
 # Series
-    "Anthropocene", "Holocene", "Pleistocene", "Pliocene", "Miocene", "Oligocene", "Eocene",
+    "Anthropocene", "Holocene", "Pleistocene", "Pliocene", "Miocene",
+    "Oligocene", "Eocene",
     "Paleocene", "Upper", "Lower"
 
 
            ),
-  type = factor(c(rep("Era",2), rep("Eon", 6), rep("Period", 18), rep("Series", 10)), levels = c("Era", "Eon", "Period", "Series"), ordered = TRUE),
+  type = factor(
+    c(rep("Era",2),
+      rep("Eon", 6),
+      rep("Period", 18),
+      rep("Series", 10)
+      ),
+    levels = c("Era", "Eon", "Period", "Series"),
+    ordered = TRUE
+    ),
   top = c(0, 541, 0, 66.0, 251.902, 541, 1000, 1600, 0, 2.58, 23.03, 66.0,
           145.0, 201.3, 251.902, 298.9, 358.9 , 419.2, 443.8 , 485.4, 541,
           635, 720, 1000, 1200, 1400,

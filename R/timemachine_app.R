@@ -48,7 +48,12 @@ ui <- fluidPage(
 #-------------------------------------------------------------------------------
                         column(
                             width = 2,
-                            plotOutput("legend1", height = 100)
+                            plotOutput("legend1", height = 100),
+                            br(),
+                            br(),
+                            br(),
+                            br(),
+                            time_legbox
                             ),
 #-------------------------------------------------------------------------------
 # Zoom plot
@@ -158,7 +163,8 @@ server <- function(input, output) {
 
     strat_plot1 <- reactive({
         chrono_bldr(
-            time_plot(timemachine::temp_curve, Age, Proxy), capture_legend = TRUE
+            time_plot(timemachine::temp_curve, Age, Proxy),
+            capture_legend = TRUE
             )
     })
 
@@ -239,7 +245,9 @@ server <- function(input, output) {
 
         switch(
             input$events,
-            PETM = filter(timemachine::temp_curve, between(.data$Age, 55.835, 56.135)),
+            PETM = filter(timemachine::temp_curve,
+                          between(.data$Age, 55.835, 56.135)
+                          ),
             worst = filter(timemachine::temp_curve, .data$Age < 10^-3,
                            .data$scenario == "0" |
                                .data$scenario == "2"
@@ -380,18 +388,6 @@ shinyApp(ui = ui, server = server)
 
 }
 
-#' #' Run the Shiny Application
-#' #'
-#' #' @param ... A series of options to be used inside the app.
-#' #'
-#' #' @export
-#' #' @importFrom golem with_golem_options
-#' run_app <- function(...) {
-#'     with_golem_options(
-#'         app = shinyApp(ui = ui, server = server),
-#'         golem_opts = list(...)
-#'     )
-#' }
 
 #-------------------------------------------------------------------------------
 # Not exportet
@@ -413,13 +409,13 @@ PETM_txt <- HTML(paste0("The Paleocene-Eocene Thermal Maximum (PETM; ~56 Ma) is
                         climate change. This particular event is associated with
                         rapidly increasing global temperatures, known as a
                         hyperthermal. The temperature rise has been attributed
-                        to the melting of methane in an ice-like state stored in
-                        the seabed and/or CO", tags$sub("2"), " release by
-                        massive volcanism. This make it an interesting interval
+                        to the melting of methane stored in the seabed in an
+                        ice-like state and/or CO", tags$sub("2"), " release by
+                        massive volcanism. This makes it an interesting interval
                         to compare with the modern situation."
                         )
                  )
-scenario1_txt <- HTML(paste0("The Anthropocene (> 1850 AD = 0.1 Kya on plot) is
+scenario1_txt <- HTML(paste0("The Anthropocene (> 1850 AD = 0.1 ka on plot) is
                              the latest geological interval. This interval is
                              coined after the unprecedented footprint left by
                              humankind (anthro = human) on the Earth system as a
@@ -437,7 +433,7 @@ scenario1_txt <- HTML(paste0("The Anthropocene (> 1850 AD = 0.1 Kya on plot) is
                              2050 AD", tags$sup("6,"), tags$sup("7"), "."
                              )
                       )
-scenario2_txt <- HTML(paste0("The Anthropocene (> 1850 AD = 0.1 Kya on plot) is
+scenario2_txt <- HTML(paste0("The Anthropocene (> 1850 AD = 0.1 ka on plot) is
                              the latest geological interval. This interval is
                              coined after the unprecedented footprint left by
                              humankind (anthro = human) on the Earth system as
@@ -449,12 +445,21 @@ scenario2_txt <- HTML(paste0("The Anthropocene (> 1850 AD = 0.1 Kya on plot) is
                              pre-industrial increase of radiative forcing in
                              watts per metre squared. In this pestimistic
                              scenario, known as RCP8.5, often referred to as
-                             business as usual, it is suggested that humankind
+                             \"business as usual\", it is suggested that humankind
                              will do nothing to reduce emmisions as we exploit
                              more-and-more of the fossil fuel reserves",
                              tags$sup("6,"), tags$sup("7"), "."
                              )
                       )
+
+# time unit legends
+time_legbox <- fluidRow(
+    h6("Ma = million years before present"),
+    h6("ka = kilo years before present"),
+    h6("a = years before present"),
+    h6(em("\"a\" stands for the Latin nominative singular \"annus\"")),
+    h6(em("\"before present\" refers to before 1950 anno Domini (AD)"))
+    )
 
 # math text
 LC_txt <- "Linear curve: Has a constant rate of change."
@@ -477,13 +482,13 @@ ref3 <- h6("3) Climatic Research Unit (University of East Anglia) and Met
            Office"
            )
 ref4 <- h6(a(href="https://climate4impact.eu/", "4) Climate4impact"))
-ref5 <- h6(a(href="https://www.wcrp-climate.org/", "5) World Climate Research
-             Program"
-             )
-           )
-ref6 <- h6("6) Hansen et al., 2013. Climate sensitivity, sea level and
+ref5 <- h6("5) Hansen et al., 2013. Climate sensitivity, sea level and
            atmospheric carbon dioxide. Philosophical Transactions of the Royal
            Society A: Mathematical, Physical and Engineering Sciences 371: 1-31"
+           )
+ref6 <- h6(a(href="https://www.wcrp-climate.org/", "6) World Climate Research
+             Program"
+             )
            )
 ref7 <- h6("7) IPCC, 2013: Climate Change 2013: The Physical Science Basis.
            Contribution of Working Group I to the Fifth Assessment Report of

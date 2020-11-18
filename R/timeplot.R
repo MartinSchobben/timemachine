@@ -59,7 +59,7 @@ time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE,
             xmax = .data$xmax,
             y = .data$y - 6
             ),
-        height = 0.3,
+        height = 0.6,
         inherit.aes = FALSE
         ) +
       geom_text(
@@ -85,7 +85,7 @@ time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE,
               xmax = .data$xmax,
               y = .data$y - 6
               ),
-              height = 0.3,
+              height = 0.6,
               inherit.aes = FALSE
               ) +
         geom_text(

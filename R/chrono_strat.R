@@ -87,9 +87,13 @@ chrono_bldr <- function(graph, reverse = FALSE, capture_legend = FALSE) {
       ) %>%
     select(.data$name, .data$type, .data$R, .data$G, .data$B, .data$width)
 
-  #unique.types <-rev(unique(filter.chrono$type)) %>% as.character()
   # filter unique types based on length of timeseries
-  if (reverse) time.select <- diff(rev(x.range)) else time.select <- diff(x.range)
+  if (reverse) {
+    time.select <- diff(rev(x.range))
+    } else {
+      time.select <- diff(x.range)
+    }
+
   if (time.select > 10) {
     unique.types <- rev(
       unique(
@@ -97,8 +101,9 @@ chrono_bldr <- function(graph, reverse = FALSE, capture_legend = FALSE) {
           filter(filter.chrono, .data$type != "Series"),
           .data$type)
         )
-      ) %>% as.character()
+    ) %>% as.character()
   }
+
   if (time.select > 1 & time.select <= 10) {
     unique.types <- rev(
       unique(
@@ -108,6 +113,7 @@ chrono_bldr <- function(graph, reverse = FALSE, capture_legend = FALSE) {
         )
     ) %>% as.character()
   }
+
   if (time.select <= 1) {
     unique.types <- rev(
       unique(
@@ -126,16 +132,23 @@ chrono_bldr <- function(graph, reverse = FALSE, capture_legend = FALSE) {
     heights = rep(unit(1, "null"), times = length(unique.types))
     )
 
-  # Fill gtable with individual table grobs for each type of geologic time, create dotted lines for unofficial units
+  # Fill gtable with individual table grobs for each type of geologic time
   for (i in seq_along(unique.types)){
 
     period.df <- filter.chrono[filter.chrono$type == unique.types[i],]
     # Fonts
-    if (any(period.df$type == "Series")) fonts <- list(fontsize = 8L)
-    if (any(period.df$type == "Period")) fonts <- list(fontsize = 8L)
-    if (any(period.df$type == "Eon")) fonts <- list(fontsize = 8L)
-    if (any(period.df$type == "Era")) fonts <- list(fontsize = 9L, fontface = "bold")
-
+    if (any(period.df$type == "Series")) {
+      fonts <- list(fontsize = 8L)
+      }
+    if (any(period.df$type == "Period")) {
+      fonts <- list(fontsize = 8L)
+      }
+    if (any(period.df$type == "Eon")) {
+      fonts <- list(fontsize = 8L)
+    }
+    if (any(period.df$type == "Era")) {
+      fonts <- list(fontsize = 9L, fontface = "bold")
+    }
 
     # Suppress font printing if small box
     period.df  <-  period.df %>%
@@ -188,8 +201,8 @@ label_geotime <- function(fctt) {
 geotime_finder <- function(x.range, reverse) {
   if (reverse) x.range <- rev(x.range)
   res_time <- diff(x.range)
-  if (res_time  > 1) {return(lst(fct_ch = 1, age_lab = "Mya"))}
-  if (between(res_time, 10^-3, 1)) {return(lst(fct_ch = 10^3, age_lab = "Kya"))}
+  if (res_time  > 1) {return(lst(fct_ch = 1, age_lab = "Ma"))}
+  if (between(res_time, 10^-3, 1)) {return(lst(fct_ch = 10^3, age_lab = "ka"))}
   if (res_time  <
-      10^-3) {return(lst(fct_ch = 10^6, age_lab = "years Before Present"))}
+      10^-3) {return(lst(fct_ch = 10^6, age_lab = "yr BP"))}
 }
