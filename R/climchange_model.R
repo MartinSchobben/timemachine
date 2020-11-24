@@ -64,7 +64,7 @@ curve_fit <- function(df, time, proxy) {
 
   # select model with lowest sigma
   model <-  model_ls[[name_model]]
-  expr_formula <- form_generator(model, name_model, min(pull(df, {{proxy}})))
+  expr_formula <- form_generator(model, name_model, min(pull(df, {{proxy}})))# + 0.1)
 
   if(max(pull(df, {{time}})) > 0.1) int <- 10^-3 else int <- 10^-5
 
@@ -88,10 +88,12 @@ form_generator <- function(model, type, asym){
 
   coefs <- coef(model)
   if (type == "model_logistic"){
-    coefs[3] <- coefs[3]/1
+    coefs[3] <- -1 / coefs[3]
+    coefs[2] <- -coefs[3] * coefs[2]
     coefs <- sapply(coefs , sprintf, fmt = "%.1e") %>% unname()
     a <- coefs[1]
-    b <- coefs[3]
+    b <- coefs[2]
+    c <- coefs[3]
   } else {
       coefs <- sapply(coefs , sprintf, fmt = "%.1e") %>% unname()
       a <- coefs[1]
@@ -102,7 +104,7 @@ form_generator <- function(model, type, asym){
     type,
     model_lm = paste0("$$Temp = ",a + asym ," + ",b ,"Age$$"),
     model_exp = paste0("$$Temp = ",a ,"\\exp^{",b ,"Age} + ", sprintf(fmt = "%.1e", asym), "$$"),
-    model_logistic = paste0("$$Temp = \\frac{",a ,"}{1 + \\exp^{",b ,"Age}} + ", sprintf(fmt = "%.1e", asym), "$$")
+    model_logistic = paste0("$$Temp = \\frac{",a ,"}{1 + \\exp^{",b, "+",c ,"Age}} + ", sprintf(fmt = "%.1e", asym), "$$")
     )
 
 }
