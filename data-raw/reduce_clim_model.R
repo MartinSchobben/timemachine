@@ -24,7 +24,7 @@ as_tibble(cubelyr::as.tbl_cube(model))  %>%
   separate(t, into =c("label", "t") , sep = "_") %>%
   mutate(date = make_datetime(year = 2006, month = as.numeric(t))) %>%
   group_by(Age = year(date)) %>%
-  summarise(Proxy = mean(mean_T) - 273,15)
+  summarise(Proxy = mean(mean_T) - 273.15)
 }
 
 
@@ -32,5 +32,5 @@ sum_rcp26 <- flatten_model(nc_rcp26)
 sum_rcp85 <- flatten_model(nc_rcp85)
 clim_model_predict <- bind_rows(sum_rcp26, sum_rcp85, .id = "scenario")
 
-#usethis::use_data(clim_model_predict, overwrite = TRUE)
+usethis::use_data(clim_model_predict, overwrite = TRUE)
 

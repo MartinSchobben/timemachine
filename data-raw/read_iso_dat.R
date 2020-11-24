@@ -45,8 +45,8 @@ Westherhold2020ScMag <- filter(Westherhold2020ScMag, Age > 0.0117)
 # behind paywall
 #-------------------------------------------------------------------------------
 
-Marcot2013ScMag <- readxl::read_xlsx(
-  "https://science-sciencemag.org/highwire/filestream/594506/field_highwire_adjunct_files/1/Marcott.SM.database.S1.xlsx",
+Marcot2013ScMag <- readxl::read_xlsx("data-raw/Marcott.SM.database.S1.xlsx",
+  #"https://science-sciencemag.org/highwire/filestream/594506/field_highwire_adjunct_files/1/Marcott.SM.database.S1.xlsx",
   sheet = 3,
   na = "NaN",
   range = cellranger::as.cell_limits("C4:E571"),

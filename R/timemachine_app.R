@@ -503,7 +503,7 @@ fig_cap <- tags$figcaption(
     HTML(
         paste0("Data sources; sediments (benthic foraminifera \u03B4",
                tags$sup("18"), "O from ref. 1 and composite curve from ref.
-               2) instrumental (HadCRUT4)", tags$sup("3"), ", model (BCC_CM1)",
+               2) instrumental (HadSST3)", tags$sup("3"), ", model (BCC_CM1)",
                tags$sup("4"), ". ", "\u03B4",tags$sup("18"), "O conversion to
                temperature after ref 5."
         )
