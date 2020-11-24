@@ -1,13 +1,14 @@
 Package: timemachine
-Title: This is an educational app for studying past climate and events of climate change
+Title: Educational app for studying past climate and events of climate change
 Version: 0.0.0.9000
+Year: 2020
 Authors@R: 
     person(given = "Martin",
            family = "Schobben",
            role = c("aut", "cre"),
            email = "m.a.n.schobben@uu.nl",
            comment = c(ORCID = "0000-0001-8560-0037"))
-Description: What the package does (one paragraph).
+Description: This app is intended for educational purposes. The interactive plots should instill a better appreciation of long geological timescales and our current understanding of past, present and future climate. The current rate of climate change is unprecedented when compared to what we know of past climate and extreme climate events, such as the Paleocene Eocene Thermal Maximum.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
