@@ -176,7 +176,7 @@ server <- function(input, output, session) {
 
     strat_plot1 <- reactive({
         chrono_bldr(
-            time_plot(timemachine::temp_curve, Age, Proxy),
+            time_plot(timemachine::temp_curve, Age, Proxy, ice = TRUE),
             capture_legend = TRUE,
             tectonic = TRUE
             )

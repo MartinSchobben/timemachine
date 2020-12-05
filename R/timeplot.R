@@ -11,7 +11,7 @@
 #' @return ggplot
 #' @export
 time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE,
-                      range_sh = NULL){
+                      range_sh = NULL, ice = FALSE){
 
   # default ggplot theme
   theme_set(theme_classic())
@@ -71,8 +71,9 @@ time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE,
             ),
         inherit.aes = FALSE
         )
+
     return(p)
-    } else{
+    } else {
       p <- p +
         ggrepel::geom_text_repel(
           data = clim_transients,
@@ -98,6 +99,46 @@ time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE,
               ),
           inherit.aes = FALSE
           )
+      if(ice) {
+        EA_pol <- tibble(
+          x = c(0, 14, 14.5, 16.5, 17, 33, 34, 46, 34, 33, 17, 16.5, 14.5, 14, 0, 0),
+          y = c(1, 1, 0.7, 0.7, 1, 1, 0.6, 0.5, 0.4, 0, 0, 0.3, 0.3, 0, 0, 1) * 2 + 30,
+          label = "East Antarctic"
+        )
+        WA_pol <- tibble(
+          x = c(0, 14, 14.5, 32, 14.5, 14, 0, 0),
+          y = c(1, 1, 0.7, 0.5, 0.3, 0, 0, 1) * 2 + 28,
+          label = "West Antarctic"
+        )
+
+        NH_pol <- tibble(
+          x = c(0, 2.4, 2.5, 14, 2.5, 2.4, 0, 0),
+          y = c(1, 1, 0.7, 0.5, 0.3, 0, 0, 1) * 2 + 24,
+          label = "Arctic"
+        )
+
+        ice_pol <- bind_rows(EA_pol, WA_pol, NH_pol)
+
+        p <- p +
+          geom_polygon(
+            data = ice_pol,
+            aes(x = x, y = y),
+            fill = "cadetblue3",
+            inherit.aes = FALSE
+            ) +
+         ggrepel::geom_text_repel(
+            data = group_by(ice_pol, label) %>%
+              summarise(x = min(x), y = mean(y)),
+            aes(label = label, x = x, y = y),
+            inherit.aes = FALSE,
+            #direction = "both",
+            size = 3,
+            #min.segment.length = 1e-4#,
+            nudge_x = 0.3
+          ) +
+          annotate("text", x = 3.5, y = 34, label = "Ice sheets", size = 5)
+        return(p)
+      }
       return(p)
     }
   }
