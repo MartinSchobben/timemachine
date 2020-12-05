@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Introduction to the timemachine App
+# Introduction to the timemachine app
 
 This app is intended for educational purposes. The interactive plots should instill a better appreciation of long geological timescales and our current understanding of past, present and future climate. The current rate of climate change is unprecedented when compared to what we know of past climate and extreme climate events, such as the Paleocene-Eocene Thermal Maximum (PETM;  ~56 Ma). 
 
@@ -37,8 +37,8 @@ refs <- miscutils::pkg_refworker(
     "gridExtra", "devtools", "roxygen2", "testthat", "knitr", "rmarkdown", 
     "Cairo"
     ), 
-  "/home/amandus/Documents/work/library/library.bib",
-  "/home/amandus/Documents/work/library/biblio.bib"
+  "library.bib",
+  "biblio.bib"
   )
 
 ```
@@ -72,7 +72,7 @@ timemachine_app()
 
 # Credits
 
-The *timemachine* App is created with *shiny*[@shiny] in the R [@rversion]. The package and app rely on a set of external packages from the tidyverse universe, including: *dplyr* [@dplyr], *tidyr* [@tidyr], *tibble* [@tibble], *ggplot2* [@ggplot2], *rlang* [@rlang]. Package development is aided by; *devtools* [@devtools], *roxygen2* [@roxygen2], *testthat* [@testthat]. This README file is generated with *knitr* [@knitr1 ; @knitr2], *rmarkdown* [@rmarkdown1; @rmarkdown2]. The graphics for the chronostratigraphic plots was aided by the packages; *gridExtra* [@gridExtra], *gtable* [@gtable], and *Cairo* [@Cairo].
+The *timemachine* app is created with *shiny*[@shiny] in the R language[@rversion]. The package and app rely on a set of external packages from the tidyverse universe, including: *dplyr* [@dplyr], *tidyr* [@tidyr], *tibble* [@tibble], *ggplot2* [@ggplot2], *rlang* [@rlang]. Package development is aided by; *devtools* [@devtools], *roxygen2* [@roxygen2], *testthat* [@testthat]. This README file is generated with *knitr* [@knitr1 ; @knitr2], *rmarkdown* [@rmarkdown1; @rmarkdown2]. The graphics for the chronostratigraphic plots use the packages; *gridExtra* [@gridExtra], *gtable* [@gtable], and *Cairo* [@Cairo].
 
 The book: *Mastering Shiny*, by @Wickham2020 greatly helped development of the app.
 

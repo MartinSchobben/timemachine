@@ -5,10 +5,16 @@
 #' @param reverse logical whether the time axis was already reversed
 #' @param capture_legend logical indicating whether the legend should be
 #' returned
+#' @param tectonic logical indicating whether tectonic event plot is required
 #'
 #' @return A list with ggplot, gtable and grob elements
 #' @export
-chrono_bldr <- function(graph, reverse = FALSE, capture_legend = FALSE) {
+chrono_bldr <- function(
+  graph,
+  reverse = FALSE,
+  capture_legend = FALSE,
+  tectonic = FALSE
+  ) {
 
   # save legend
   if (capture_legend) {
@@ -187,8 +193,12 @@ chrono_bldr <- function(graph, reverse = FALSE, capture_legend = FALSE) {
     pg <- gtable_add_grob(x = pg, grobs = gt, t = i, l = j.plot)
   }
 
+
+
   ls_gg <- lst(original, chrono = pg)
   if (capture_legend) ls_gg$legbox <- legbox
+
+  if (tectonic) ls_gg$tect <- suppressMessages({graph + gg_tect(rev(x.range))})
   return(ls_gg)
 }
 

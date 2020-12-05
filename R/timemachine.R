@@ -3,10 +3,9 @@
 #' This is an educational package to learn about past, present and future
 #' climate
 #'
-#' @importFrom grDevices rgb
+#' @importFrom grDevices rgb gray
 #' @importFrom stats coef lm nls predict
 #' @importFrom utils read.table
-#' @import shiny
 #' @import Cairo
 #' @import ggplot2
 #' @import gtable
@@ -14,9 +13,9 @@
 #' @import tibble
 #' @import tidyr
 #' @import rlang
-#' @import shiny
 #' @import rsconnect
-#'
+#' @import shinyBS
+#' @rawNamespace import(shiny, except = serverInfo)
 #'
 #' @docType package
 #' @name timemachine

@@ -38,8 +38,21 @@ ui <- fluidPage(
                                     )
                                 ),
                             plotOutput(
+                                "tectonics",
+                                height = 100,
+                                click = "plot_click",
+                                ),
+                            plotOutput(
                                 "chrono1",
                                 height = 100
+                                ),
+                            # hover popover
+                            shinyBS::bsPopover(
+                                id = "chrono1",
+                                title = "Geological time",
+                                content = time_legbox,
+                                placement = "top",
+                                trigger = 'hover'
                                 ),
                             fig_cap
                             ),
@@ -52,8 +65,8 @@ ui <- fluidPage(
                             br(),
                             br(),
                             br(),
-                            br(),
-                            time_legbox
+                            #tableOutput("driver")
+                            plotOutput("driver", height = 250)
                             ),
 #-------------------------------------------------------------------------------
 # Zoom plot
@@ -151,7 +164,7 @@ ui <- fluidPage(
 
 
 # Define server logic required to draw a histogram
-server <- function(input, output) {
+server <- function(input, output, session) {
 
 # ------------------------------------------------------------------------------
 # Linked plots
@@ -164,21 +177,50 @@ server <- function(input, output) {
     strat_plot1 <- reactive({
         chrono_bldr(
             time_plot(timemachine::temp_curve, Age, Proxy),
-            capture_legend = TRUE
+            capture_legend = TRUE,
+            tectonic = TRUE
             )
     })
 
+
     proxy1 <- reactive(strat_plot1() %>% purrr::pluck("original"))
+    tect <- reactive(strat_plot1() %>% purrr::pluck("tect"))
     chrono1 <- reactive(strat_plot1() %>% purrr::pluck("chrono") %>% plot)
     legbox <- reactive(strat_plot1() %>% purrr::pluck("legbox") %>% plot)
 
 #-------------------------------------------------------------------------------
 # Overview plot
 #-------------------------------------------------------------------------------
+    # click on tectonics selection plot
+    output$driver  <- renderPlot({
+        # Make sure requirements are met
+        req(input$plot_click, cancelOutput = TRUE)
+
+        clk <- nearPoints(timemachine::tect_events, input$plot_click, threshold = 25, maxpoints = 1)
+        if (length(clk$y) == 0) clk <- tibble(y = 5) else clk
+
+        switch(clk$y,
+               `1` = gg_HIM(clk$label),
+               `2` = gg_ACC(clk$label),
+               `3` = gg_ACC(clk$label),
+               `4` = gg_GS(clk$label),
+               `5` = ggplot()+ geom_blank()+ theme_minimal()
+               )
+
+        })
+
     output$plot1 <- renderPlot({proxy1()})
+    output$tectonics <- renderPlot({tect()})
     output$chrono1 <- renderPlot({chrono1()})
     output$legend1 <- renderPlot({legbox()})
-
+    # addPopover(
+    #     session,
+    #     id = "chrono1",
+    #     title = "Geological time",
+    #     content = time_legbox,
+    #     placement = "top",
+    #     trigger = 'hover'
+    # )
 #-------------------------------------------------------------------------------
 # Zoom plot
 #-------------------------------------------------------------------------------
@@ -214,7 +256,7 @@ server <- function(input, output) {
 #-------------------------------------------------------------------------------
 # Brush 1
 #-------------------------------------------------------------------------------
-    observeEvent(input$plot1_brush,{
+    observeEvent(input$plot1_brush, {
         output$plot2 <- renderPlot({proxy2()})
         output$chrono2 <- renderPlot({chrono2()})
         }
@@ -224,6 +266,7 @@ server <- function(input, output) {
 # When a double-click happens, check if there's a brush on the plot.
 # If so, zoom to the brush bounds; if not, reset the zoom.
 #-------------------------------------------------------------------------------
+
     observe({
         brush <- input$plot1_brush
         if (!is.null(brush)) {
@@ -349,7 +392,7 @@ server <- function(input, output) {
     })
 
 #-------------------------------------------------------------------------------
-# reactive value to flip action buttion number two back to original state
+# reactive value to flip action button number two back to original state
 #-------------------------------------------------------------------------------
     button2 <- reactiveValues(result = FALSE)
 
@@ -453,13 +496,20 @@ scenario2_txt <- HTML(paste0("The Anthropocene (> 1850 AD = 0.1 ka on plot) is
                       )
 
 # time unit legends
-time_legbox <- fluidRow(
-    h6("Ma = million years before present"),
-    h6("ka = kilo years before present"),
-    h6("a = years before present"),
-    h6(em("\"a\" stands for the Latin nominative singular \"annus\"")),
-    h6(em("\"before present\" refers to before 1950 anno Domini (AD)"))
+time_legbox <-  paste(
+    "Ma = million years BP",
+    "ka = kilo years BP",
+    "<br/>",
+    "<em> \"a\" stands for the Latin nominative singular \"annus\" and \"BP\" stands for \"before present\" 1950 anno Domini </em>",
+    sep = "<br/>"
     )
+# time_legbox <- fluidRow(
+#     h6("Ma = million years before present"),
+#     h6("ka = kilo years before present"),
+#     h6("a = years before present"),
+#     h6(em("\"a\" stands for the Latin nominative singular \"annus\"")),
+#     h6(em("\"before present\" refers to before 1950 anno Domini (AD)"))
+#     )
 
 # math text
 LC_txt <- "Linear curve: Has a constant rate of change."

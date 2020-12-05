@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Introduction to the timemachine App
+# Introduction to the timemachine app
 
 This app is intended for educational purposes. The interactive plots
 should instill a better appreciation of long geological timescales and
@@ -71,49 +71,46 @@ timemachine_app()
 
 # Credits
 
-The *timemachine* App is created with *shiny*(Chang et al. 2020) in the
-R (R Core Team 2020). The package and app rely on a set of external
-packages from the tidyverse universe, including: *dplyr* (Wickham,
-François, et al. 2020), *tidyr* (Wickham 2020b), *tibble* (Müller and
-Wickham 2020), *ggplot2* (Wickham 2016), *rlang* (Henry and Wickham
-2020). Package development is aided by; *devtools* (Wickham, Hester, and
-Chang 2020), *roxygen2* (Wickham, Danenberg, et al. 2020), *testthat*
-(Wickham 2011). This README file is generated with *knitr* (Xie 2020 ,
-2015), *rmarkdown* (Allaire et al. 2020; Xie, Allaire, and Grolemund
-2018). The graphics for the chronostratigraphic plots was aided by the
-packages; *gridExtra* (Auguie 2017), *gtable* (Wickham and Pedersen
-2019), and *Cairo* (Urbanek and Horner 2020).
+The *timemachine* app is created with
+*shiny*(<span class="citeproc-not-found" data-reference-id="shiny">**???**</span>)
+in the R language(R Core Team 2020). The package and app rely on a set
+of external packages from the tidyverse universe, including: *dplyr*
+(<span class="citeproc-not-found" data-reference-id="dplyr">**???**</span>),
+*tidyr*
+(<span class="citeproc-not-found" data-reference-id="tidyr">**???**</span>),
+*tibble*
+(<span class="citeproc-not-found" data-reference-id="tibble">**???**</span>),
+*ggplot2*
+(<span class="citeproc-not-found" data-reference-id="ggplot2">**???**</span>),
+*rlang*
+(<span class="citeproc-not-found" data-reference-id="rlang">**???**</span>).
+Package development is aided by; *devtools*
+(<span class="citeproc-not-found" data-reference-id="devtools">**???**</span>),
+*roxygen2*
+(<span class="citeproc-not-found" data-reference-id="roxygen2">**???**</span>),
+*testthat*
+(<span class="citeproc-not-found" data-reference-id="testthat">**???**</span>).
+This README file is generated with *knitr*
+(<span class="citeproc-not-found" data-reference-id="knitr1">**???**</span>
+;
+<span class="citeproc-not-found" data-reference-id="knitr2">**???**</span>),
+*rmarkdown*
+(<span class="citeproc-not-found" data-reference-id="rmarkdown1">**???**</span>;
+<span class="citeproc-not-found" data-reference-id="rmarkdown2">**???**</span>).
+The graphics for the chronostratigraphic plots use the packages;
+*gridExtra*
+(<span class="citeproc-not-found" data-reference-id="gridExtra">**???**</span>),
+*gtable*
+(<span class="citeproc-not-found" data-reference-id="gtable">**???**</span>),
+and *Cairo*
+(<span class="citeproc-not-found" data-reference-id="Cairo">**???**</span>).
 
-The book: *Mastering Shiny*, by Wickham (2020a) greatly helped
+The book: *Mastering Shiny*, by Wickham (2020) greatly helped
 development of the app.
 
 # References
 
 <div id="refs" class="references">
-
-<div id="ref-rmarkdown1">
-
-Allaire, JJ, Yihui Xie, Jonathan McPherson, Javier Luraschi, Kevin
-Ushey, Aron Atkins, Hadley Wickham, Joe Cheng, Winston Chang, and
-Richard Iannone. 2020. *Rmarkdown: Dynamic Documents for R*.
-<https://github.com/rstudio/rmarkdown>.
-
-</div>
-
-<div id="ref-gridExtra">
-
-Auguie, Baptiste. 2017. *GridExtra: Miscellaneous Functions for "Grid"
-Graphics*. <https://CRAN.R-project.org/package=gridExtra>.
-
-</div>
-
-<div id="ref-shiny">
-
-Chang, Winston, Joe Cheng, JJ Allaire, Yihui Xie, and Jonathan
-McPherson. 2020. *Shiny: Web Application Framework for R*.
-<https://CRAN.R-project.org/package=shiny>.
-
-</div>
 
 <div id="ref-Hansen2013">
 
@@ -125,14 +122,6 @@ Physical and Engineering Sciences* 371 (2001).
 
 </div>
 
-<div id="ref-rlang">
-
-Henry, Lionel, and Hadley Wickham. 2020. *Rlang: Functions for Base
-Types and Core R and ’Tidyverse’ Features*.
-<https://CRAN.R-project.org/package=rlang>.
-
-</div>
-
 <div id="ref-Marcott2013">
 
 Marcott, Shaun a., Jeremy D. Shakun, Peter U. Clark, and Alan C. Mix.
@@ -141,27 +130,11 @@ Marcott, Shaun a., Jeremy D. Shakun, Peter U. Clark, and Alan C. Mix.
 
 </div>
 
-<div id="ref-tibble">
-
-Müller, Kirill, and Hadley Wickham. 2020. *Tibble: Simple Data Frames*.
-<https://CRAN.R-project.org/package=tibble>.
-
-</div>
-
 <div id="ref-rversion">
 
 R Core Team. 2020. *R: A Language and Environment for Statistical
 Computing*. Vienna, Austria: R Foundation for Statistical Computing.
 <https://www.R-project.org/>.
-
-</div>
-
-<div id="ref-Cairo">
-
-Urbanek, Simon, and Jeffrey Horner. 2020. *Cairo: R Graphics Device
-Using Cairo Graphics Library for Creating High-Quality Bitmap (Png,
-Jpeg, Tiff), Vector (Pdf, Svg, Postscript) and Display (X11 and Win32)
-Output*. <https://CRAN.R-project.org/package=Cairo>.
 
 </div>
 
@@ -175,85 +148,10 @@ over the last 66 million years.” *Science* 369 (6509): 1383–8.
 
 </div>
 
-<div id="ref-testthat">
-
-Wickham, Hadley. 2011. “Testthat: Get Started with Testing.” *The R
-Journal* 3: 5–10.
-<https://journal.r-project.org/archive/2011-1/RJournal_2011-1_Wickham.pdf>.
-
-</div>
-
-<div id="ref-ggplot2">
-
-———. 2016. *Ggplot2: Elegant Graphics for Data Analysis*.
-Springer-Verlag New York. <https://ggplot2.tidyverse.org>.
-
-</div>
-
 <div id="ref-Wickham2020">
 
-———. 2020a. *Mastering shiny; Build interactive apps, reports &
-Dashboards*.
-
-</div>
-
-<div id="ref-tidyr">
-
-———. 2020b. *Tidyr: Tidy Messy Data*.
-<https://CRAN.R-project.org/package=tidyr>.
-
-</div>
-
-<div id="ref-roxygen2">
-
-Wickham, Hadley, Peter Danenberg, Gábor Csárdi, and Manuel Eugster.
-2020. *Roxygen2: In-Line Documentation for R*.
-<https://CRAN.R-project.org/package=roxygen2>.
-
-</div>
-
-<div id="ref-dplyr">
-
-Wickham, Hadley, Romain François, Lionel Henry, and Kirill Müller. 2020.
-*Dplyr: A Grammar of Data Manipulation*.
-<https://CRAN.R-project.org/package=dplyr>.
-
-</div>
-
-<div id="ref-devtools">
-
-Wickham, Hadley, Jim Hester, and Winston Chang. 2020. *Devtools: Tools
-to Make Developing R Packages Easier*.
-<https://CRAN.R-project.org/package=devtools>.
-
-</div>
-
-<div id="ref-gtable">
-
-Wickham, Hadley, and Thomas Lin Pedersen. 2019. *Gtable: Arrange ’Grobs’
-in Tables*. <https://CRAN.R-project.org/package=gtable>.
-
-</div>
-
-<div id="ref-knitr2">
-
-Xie, Yihui. 2015. *Dynamic Documents with R and Knitr*. 2nd ed. Boca
-Raton, Florida: Chapman; Hall/CRC. <https://yihui.org/knitr/>.
-
-</div>
-
-<div id="ref-knitr1">
-
-———. 2020. *Knitr: A General-Purpose Package for Dynamic Report
-Generation in R*. <https://yihui.org/knitr/>.
-
-</div>
-
-<div id="ref-rmarkdown2">
-
-Xie, Yihui, J. J. Allaire, and Garrett Grolemund. 2018. *R Markdown: The
-Definitive Guide*. Boca Raton, Florida: Chapman; Hall/CRC.
-<https://bookdown.org/yihui/rmarkdown>.
+Wickham, Hadley. 2020. *Mastering shiny; Build interactive apps, reports
+& Dashboards*.
 
 </div>
 

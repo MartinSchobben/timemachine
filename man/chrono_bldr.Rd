@@ -4,7 +4,7 @@
 \alias{chrono_bldr}
 \title{Chronostratigraphic columns for ggplot}
 \usage{
-chrono_bldr(graph, reverse = FALSE, capture_legend = FALSE)
+chrono_bldr(graph, reverse = FALSE, capture_legend = FALSE, tectonic = FALSE)
 }
 \arguments{
 \item{graph}{ggplot object}
@@ -13,6 +13,8 @@ chrono_bldr(graph, reverse = FALSE, capture_legend = FALSE)
 
 \item{capture_legend}{logical indicating whether the legend should be
 returned}
+
+\item{tectonic}{logical indicating whether tectonic event plot is required}
 }
 \value{
 A list with ggplot, gtable and grob elements

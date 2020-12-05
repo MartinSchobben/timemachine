@@ -10,10 +10,10 @@ approx_y <- function(x) {
 clim_trends <- tibble(
   xmin = c(49, 15, 3.025),
   xmax = c(54, 17, 3.264),
-  x = purrr::map2_dbl(xmax, xmin, ~{.y + (.x -.y) / 2}),
+  x = purrr::map2_dbl(xmax, xmin, ~{.y + (.x - .y) / 2}),
   y = purrr::map_dbl(x, ~(approx_y(.x))[1]),
   label = c(
-    "EarlyEocene Climate Optimum",
+    "Early Eocene Climate Optimum",
     "middle Miocene Climate Optimum",
     "mid-Pliocene Warm Period"
     )
@@ -46,3 +46,36 @@ clim_transients <-tibble(
 
 usethis::use_data(clim_transients, overwrite = TRUE, internal = TRUE)
 
+# tectonic events
+tect_events <- tibble(
+  label = factor(
+    c("India-Eurasia collision",
+      "opening of the Drake Passage",
+      "opening of the Tasman Gateway",
+      "closing of the Pananama Gateway"
+      ),
+    levels = c(
+      "India-Eurasia collision",
+      "opening of the Drake Passage",
+      "opening of the Tasman Gateway",
+      "closing of the Pananama Gateway"
+      ),
+    ordered = TRUE
+    ),
+  y = 1:4,
+  xmin = c(40.4, 19, 33.5 - 1.5, 4.20),
+  xmax = c(50.2, 41, 33.5 + 1.5, 4.7),
+  ref =  c(
+    "Bouilhol et al 2013",
+    "Scher et al., 2006; Cramer et al., 2008",
+    "Scher et al., 2015",
+    "Haug et al., 2001"
+    )
+  ) %>%
+  mutate(
+    xrange = xmax - xmin,
+    xmid = xmin + (xrange  / 2)
+  )
+
+
+usethis::use_data(tect_events, overwrite = TRUE, internal = TRUE)
