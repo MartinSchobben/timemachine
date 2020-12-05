@@ -46,13 +46,14 @@ time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE,
 
   if (events) {
     if (explain) {
-    p <- p + ggrepel::geom_label_repel(
-      data = clim_transients,
-      aes(x = .data$x, y = .data$y, label = .data$label_exp),
-      arrow = arrow(length = unit(0.02, "npc")),
-      nudge_y = 8,
-      inherit.aes = FALSE
-      ) +
+    p <- p +
+      ggrepel::geom_label_repel(
+        data = clim_transients,
+        aes(x = .data$x, y = .data$y, label = .data$label_exp),
+        arrow = arrow(length = unit(0.02, "npc")),
+        nudge_y = 8,
+        inherit.aes = FALSE
+        ) +
       geom_errorbarh(
         data = timemachine::clim_trends,
         aes(xmin = .data$xmin,
@@ -72,13 +73,14 @@ time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE,
         )
     return(p)
     } else{
-      p <- p + ggrepel::geom_text_repel(
-        data = clim_transients,
-        aes(x = .data$x, y = .data$y, label = .data$label),
-        arrow = arrow(length = unit(0.02, "npc")),
-        nudge_y = 8,
-        inherit.aes = FALSE
-        ) +
+      p <- p +
+        ggrepel::geom_text_repel(
+          data = clim_transients,
+          aes(x = .data$x, y = .data$y, label = .data$label),
+          arrow = arrow(length = unit(0.02, "npc")),
+          nudge_y = 8,
+          inherit.aes = FALSE
+          ) +
         geom_errorbarh(
           data = timemachine::clim_trends,
           aes(xmin = .data$xmin,
@@ -88,7 +90,7 @@ time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE,
               height = 0.6,
               inherit.aes = FALSE
               ) +
-        geom_text(
+        ggrepel::geom_text_repel(
           data = timemachine::clim_trends,
           aes(x = .data$x,
               y = .data$y - 9,
