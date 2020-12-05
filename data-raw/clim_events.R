@@ -49,22 +49,22 @@ usethis::use_data(clim_transients, overwrite = TRUE, internal = TRUE)
 # tectonic events
 tect_events <- tibble(
   label = factor(
-    c("India-Eurasia collision",
-      "opening of the Drake Passage",
-      "opening of the Tasman Gateway",
-      "closing of the Pananama Gateway"
+    c("India-Eurasia collision (50.2-40.4 Ma)",
+      "opening of the Drake Passage (41-19 Ma)",
+      "opening of the Tasman Gateway (35-32 Ma)",
+      "closing of the Pananama Gateway (4.7-4.2 Ma)"
       ),
     levels = c(
-      "India-Eurasia collision",
-      "opening of the Drake Passage",
-      "opening of the Tasman Gateway",
-      "closing of the Pananama Gateway"
+      "India-Eurasia collision (50.2-40.4 Ma)",
+      "opening of the Drake Passage (41-19 Ma)",
+      "opening of the Tasman Gateway (35-32 Ma)",
+      "closing of the Pananama Gateway (4.7-4.2 Ma)"
       ),
     ordered = TRUE
     ),
   y = 1:4,
-  xmin = c(40.4, 19, 33.5 - 1.5, 4.20),
-  xmax = c(50.2, 41, 33.5 + 1.5, 4.7),
+  xmin = c(40.4, 19, 32, 4.20),
+  xmax = c(50.2, 41, 35, 4.7),
   ref =  c(
     "Bouilhol et al 2013",
     "Scher et al., 2006; Cramer et al., 2008",
