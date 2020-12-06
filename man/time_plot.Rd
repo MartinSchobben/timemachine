@@ -4,7 +4,15 @@
 \alias{time_plot}
 \title{Create proxy timeseries ggplot}
 \usage{
-time_plot(df, time, proxy, events = TRUE, explain = FALSE, range_sh = NULL)
+time_plot(
+  df,
+  time,
+  proxy,
+  events = TRUE,
+  explain = FALSE,
+  range_sh = NULL,
+  ice = FALSE
+)
 }
 \arguments{
 \item{df}{data}

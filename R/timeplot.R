@@ -131,11 +131,10 @@ time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE,
               summarise(x = min(x), y = mean(y)),
             aes(label = label, x = x, y = y),
             inherit.aes = FALSE,
-            #direction = "both",
+            direction = "x",
             size = 3,
-            #min.segment.length = 1e-4#,
-            nudge_x = 0.3
-          ) +
+            nudge_x = 0.1
+            ) +
           annotate("text", x = 3.5, y = 34, label = "Ice sheets", size = 5)
         return(p)
       }
