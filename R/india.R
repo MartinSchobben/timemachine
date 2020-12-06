@@ -9,17 +9,26 @@
 #' @export
 gg_HIM <- function(event, ...){
 
-  worldmap <- rnaturalearth::ne_countries(
-    scale = 'medium',
-    type = 'map_units',
-    returnclass = 'sf'
-    )
-  # extracting the map
-  In <- filter(
-    worldmap,
-    .data$continent == "India"  |
-      .data$continent == "Asia"
-    )
+  # worldmap <- rnaturalearth::ne_countries(
+  #   scale = 'medium',
+  #   type = 'map_units',
+  #   returnclass = 'sf'
+  #   )
+  #
+  in.map <- maps::map(
+    "world",
+    plot = FALSE,
+    fill = TRUE
+    ) %>%
+    sf::st_as_sf() %>%
+    sf::st_transform(crs = sf::st_crs(4326))
+
+  # # extracting the map
+  # In <- filter(
+  #   worldmap,
+  #   .data$continent == "India"  |
+  #     .data$continent == "Asia"
+  #   )
 
   lon <- c(60, 100)
   lat <- c(5, 50)
@@ -42,7 +51,7 @@ gg_HIM <- function(event, ...){
 
   ggplot() +
     geom_sf(data= polygon, fill = 'aliceblue') +
-    geom_sf(data =  In)  +
+    geom_sf(data =  in.map) +
     coord_sf(
       xlim = lon,
       ylim = lat ,

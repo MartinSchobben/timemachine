@@ -8,6 +8,7 @@
 #' @return ggplot
 #' @export
 gg_ACC <- function(event, ...){
+
   # edge
   circum <- sf::st_point(x = c(0,0)) %>%
     sf::st_buffer(dist = 4e6) %>%

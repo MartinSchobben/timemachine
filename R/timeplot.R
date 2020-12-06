@@ -7,6 +7,7 @@
 #' @param events logical whether to include climate event labels
 #' @param explain logical whether the labels include explanatory data
 #' @param range_sh the range of the window selected
+#' @param ice logical whether to include icesheet ploygons
 #'
 #' @return ggplot
 #' @export
@@ -122,14 +123,14 @@ time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE,
         p <- p +
           geom_polygon(
             data = ice_pol,
-            aes(x = x, y = y),
+            aes(x = .data$x, y = .data$y),
             fill = "cadetblue3",
             inherit.aes = FALSE
             ) +
          ggrepel::geom_text_repel(
-            data = group_by(ice_pol, label) %>%
-              summarise(x = min(x), y = mean(y)),
-            aes(label = label, x = x, y = y),
+            data = group_by(ice_pol, .data$label) %>%
+              summarise(x = min(.data$x), y = mean(.data$y)),
+            aes(label = .data$label, x = .data$x, y = .data$y),
             inherit.aes = FALSE,
             direction = "x",
             size = 3,

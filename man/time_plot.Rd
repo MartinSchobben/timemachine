@@ -26,6 +26,8 @@ time_plot(
 \item{explain}{logical whether the labels include explanatory data}
 
 \item{range_sh}{the range of the window selected}
+
+\item{ice}{logical whether to include icesheet ploygons}
 }
 \value{
 ggplot

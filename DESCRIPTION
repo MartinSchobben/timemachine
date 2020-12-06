@@ -36,5 +36,4 @@ Imports:
     shinyBS,
     ggspatial,
     sf,
-    maps,
-    rnaturalearth
+    maps

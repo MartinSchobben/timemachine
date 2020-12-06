@@ -9,17 +9,13 @@
 #' @export
 gg_GS <- function(event, ...){
 
-  worldmap <- rnaturalearth::ne_countries(
-    scale = 'medium',
-    type = 'map_units',
-    returnclass = 'sf'
-    )
-# extracting the map
-  mAm <- filter(
-    worldmap,
-    .data$continent == "South America"  |
-      .data$continent == "North America"
-    )
+  ma.map <- maps::map(
+    "world",
+    plot = FALSE,
+    fill = TRUE
+    ) %>%
+    sf::st_as_sf() %>%
+    sf::st_transform(crs = sf::st_crs(4326))
 
   lon <- c(-100, -60)
   lat <- c(0, 30)
@@ -42,7 +38,7 @@ gg_GS <- function(event, ...){
 
   ggplot() +
     geom_sf(data= polygon, fill = 'aliceblue') +
-    geom_sf(data = mAm)  +
+    geom_sf(data = ma.map)  +
     coord_sf(
       xlim =c(-100, -60),
       ylim = c(0, 30) ,
