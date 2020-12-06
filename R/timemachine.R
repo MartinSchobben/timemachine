@@ -15,6 +15,7 @@
 #' @import rlang
 #' @import rsconnect
 #' @import shinyBS
+#' @import ggspatial
 #' @rawNamespace import(shiny, except = serverInfo)
 #'
 #' @docType package

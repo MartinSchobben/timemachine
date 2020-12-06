@@ -62,7 +62,7 @@ gg_HIM <- function(event, ...){
       data = arrow_df,
       aes(x = lon, y = lat, xend = lon_end, yend = lat_end),
       crs = sf::st_crs(4326),
-      arrow = grid::arrow(length = unit(0.05, "npc"), type = "closed"),
+      arrow = grid::arrow(length = grid::unit(0.05, "npc"), type = "closed"),
       great_circle = F,
       wrap_dateline = T,
       color = "darkgreen",
