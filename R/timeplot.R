@@ -133,7 +133,8 @@ time_plot <- function(df, time, proxy, events = TRUE, explain = FALSE,
             inherit.aes = FALSE,
             direction = "x",
             size = 3,
-            nudge_x = 0.1
+            nudge_x = 0.1,
+            min.segment.length = 1e4
             ) +
           annotate("text", x = 3.5, y = 34, label = "Ice sheets", size = 5)
         return(p)
