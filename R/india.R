@@ -9,12 +9,6 @@
 #' @export
 gg_HIM <- function(event, ...){
 
-  # worldmap <- rnaturalearth::ne_countries(
-  #   scale = 'medium',
-  #   type = 'map_units',
-  #   returnclass = 'sf'
-  #   )
-  #
   in.map <- maps::map(
     "world",
     plot = FALSE,
@@ -22,13 +16,6 @@ gg_HIM <- function(event, ...){
     ) %>%
     sf::st_as_sf() %>%
     sf::st_transform(crs = sf::st_crs(4326))
-
-  # # extracting the map
-  # In <- filter(
-  #   worldmap,
-  #   .data$continent == "India"  |
-  #     .data$continent == "Asia"
-  #   )
 
   lon <- c(60, 100)
   lat <- c(5, 50)
@@ -60,7 +47,7 @@ gg_HIM <- function(event, ...){
       ) +
     ggspatial::geom_spatial_segment(
       data = arrow_df,
-      aes(x = lon, y = lat, xend = lon_end, yend = lat_end),
+      aes(x = .data$lon, y = .data$lat, xend = .data$lon_end, yend = .data$lat_end),
       crs = sf::st_crs(4326),
       arrow = grid::arrow(length = grid::unit(0.05, "npc"), type = "closed"),
       great_circle = F,

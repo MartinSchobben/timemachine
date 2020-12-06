@@ -47,7 +47,7 @@ gg_GS <- function(event, ...){
     ) +
     ggspatial::geom_spatial_segment(
       data = arrow_df,
-      aes(x = lon, y = lat, xend = lon_end, yend = lat_end),
+      aes(x = .data$lon, y = .data$lat, xend = .data$lon_end, yend = .data$lat_end),
       crs = sf::st_crs(4326),
       arrow = grid::arrow(length = grid::unit(0.05, "npc"), type = "closed"),
       great_circle = T,

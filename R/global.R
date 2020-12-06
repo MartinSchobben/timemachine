@@ -1,5 +1,5 @@
 globalVariables(c("clim_trends", "Age", "Proxy", "y", "xmin", "xmax", "xmid",
-                  "lon", "lat", "lat_end", "lon_end"))
+                  "lon", "lat"))
 
 #' @noRd
 .onLoad <- function(libname, pkgname) {
