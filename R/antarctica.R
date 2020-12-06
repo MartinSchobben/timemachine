@@ -43,8 +43,9 @@ gg_ACC <- function(event, ...){
       aes(x = .data$lon, y = .data$lat, xend = .data$lon_end, yend = .data$lat_end),
       crs = sf::st_crs(4326),
       arrow = grid::arrow(length = grid::unit(0.05, "npc"), type = "closed"),
-      wrap_dateline = T,
-      color = "red",
+      great_circle = FALSE,
+      wrap_dateline = TRUE,
+      color = "darkgreen",
       size = 1,
       inherit.aes = FALSE
       ) +

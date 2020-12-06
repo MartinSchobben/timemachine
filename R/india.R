@@ -50,8 +50,8 @@ gg_HIM <- function(event, ...){
       aes(x = .data$lon, y = .data$lat, xend = .data$lon_end, yend = .data$lat_end),
       crs = sf::st_crs(4326),
       arrow = grid::arrow(length = grid::unit(0.05, "npc"), type = "closed"),
-      great_circle = F,
-      wrap_dateline = T,
+      great_circle = FALSE,
+      wrap_dateline = TRUE,
       color = "darkgreen",
       size = 1,
       inherit.aes = FALSE
